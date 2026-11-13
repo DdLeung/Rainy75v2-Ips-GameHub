@@ -1,0 +1,2 @@
+32defab7902e57eb972a577fc6cbf3a7e57bc772d59b99f11038370412b77f41  stock/ips-original-v2.bin
+24d91708713a5b98a239c81880c3e6444b0d176219c80d601b8b4d90794131fe  collection/maid-hop-v1/ips-maid-hop-v1.bin
