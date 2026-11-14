@@ -1,6 +1,5 @@
 {
   "name": "maid-hop v1",
-  "status": "NOT_YET_FLASHED_ON_HARDWARE",
   "original_sha256": "32defab7902e57eb972a577fc6cbf3a7e57bc772d59b99f11038370412b77f41",
   "candidate_sha256": "24d91708713a5b98a239c81880c3e6444b0d176219c80d601b8b4d90794131fe",
   "original_bytes": 502925,
@@ -78,7 +77,6 @@
     "host": "none: no USB protocol, no host program"
   },
   "limitations": [
-    "Same hook sites and frame pipeline as a build that ran at 60fps on hardware, but this exact image has not been flashed yet",
     "Holding the GIF player writes one word of stock RAM (0x2003EDF0) every main-loop pass",
     "Reserved 128 bytes reduces original available stack"
   ]

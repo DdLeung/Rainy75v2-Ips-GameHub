@@ -1,6 +1,5 @@
 {
   "name": "fight-v2 (muscle vs goblin)",
-  "status": "RAN_ON_HARDWARE_2026-11-14_USER_CONFIRMED_NO_MAJOR_ISSUES",
   "original_sha256": "32defab7902e57eb972a577fc6cbf3a7e57bc772d59b99f11038370412b77f41",
   "candidate_sha256": "ce8e50e4dd42fd73a9177fefc6f3cf5410050e9a3751639addd86c43a2dbc23c",
   "original_bytes": 502925,
