@@ -126,12 +126,13 @@ let outLen = 0;          // 探测到的输出报告长度
 let selectedImage = null;
 let selectionGeneration = 0;
 const KNOWN_IMAGES = {
+  'ce8e50e4dd42fd73a9177fefc6f3cf5410050e9a3751639addd86c43a2dbc23c': '猛男 vs 哥布林 雙人格鬥遊戲 v2',
   '24d91708713a5b98a239c81880c3e6444b0d176219c80d601b8b4d90794131fe': '粉色女僕 按鍵飛行 60fps＋愛心特效 v1',
   '55aa472e1a5e2dcc97217dea8574c19d6265c4aa17fb0d7111b8e3cc91ad63f2': '粉色女僕 大頭版 按鍵飛行 60fps＋愛心特效 v1',
   '32defab7902e57eb972a577fc6cbf3a7e57bc772d59b99f11038370412b77f41': '原廠 IPS v2'
 };
 function validateFirmware(data) {
-  if (data.length < 256 || data.length > 0x7C000) throw new Error('固件大小不符合 IPS 範圍（256～507904 bytes）');
+  if (data.length < 256 || data.length > 0xF8000) throw new Error('固件大小不符合 IPS 範圍（256～1015808 bytes，最遠到 0x080FC000 設定頁之前）');
   const view = new DataView(data.buffer, data.byteOffset, data.byteLength);
   const stack = view.getUint32(0, true), reset = view.getUint32(4, true);
   if (stack < 0x20000000 || stack > 0x20060000 || stack % 8 !== 0) throw new Error('不是有效的 IPS ARM 初始堆疊');
@@ -153,7 +154,7 @@ async function loadFirmware(file) {
   if (!file) { document.getElementById('fileInfo').textContent = '尚未選擇固件'; return; }
   try {
     if (!file.name.toLowerCase().endsWith('.bin')) throw new Error('請選擇 .bin 檔案');
-    if (file.size < 256 || file.size > 0x7C000) throw new Error('固件大小超出範圍');
+    if (file.size < 256 || file.size > 0xF8000) throw new Error('固件大小超出範圍');
     const data = new Uint8Array(await file.arrayBuffer());
     validateFirmware(data);
     const hash = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', data)), x => x.toString(16).padStart(2, '0')).join('');
