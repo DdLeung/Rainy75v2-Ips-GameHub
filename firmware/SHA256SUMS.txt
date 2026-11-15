@@ -2,8 +2,8 @@
 55aa472e1a5e2dcc97217dea8574c19d6265c4aa17fb0d7111b8e3cc91ad63f2  collection/maid-bighead-v1/ips-maid-bighead-v1.bin
 24d91708713a5b98a239c81880c3e6444b0d176219c80d601b8b4d90794131fe  collection/maid-hop-v1/ips-maid-hop-v1.bin
 ce8e50e4dd42fd73a9177fefc6f3cf5410050e9a3751639addd86c43a2dbc23c  collection/fight-v2/ips-fight-v2.bin
-6e918ec7df405385b6e98a902a640b4ca9d65a2d1995e58ccbcc1d854aece8e1  collection/game-hub-v4/ips-game-hub-v4.bin
-eaec219bcd05e492c7615da8c0cf7e9a66fa7a71e1b00464d98bcc9860e6c7be  collection/game-hub-v4/素材/AVATAR.BIN
-a81da004f5006b86b249cb0e32dd35a5f424307fc2c25f57dc4d238127554725  collection/game-hub-v4/素材/BOSS.BIN
-5fd68e9a76cdcd27f32ba3a552ffc87f4207524890a13d3a096a06253dfe2c91  collection/game-hub-v4/素材/FIGHT.BIN
-68dd3e29d33d44dad5157f721bcb4c299f72530960e82d3a3726b68bb34cea29  collection/game-hub-v4/素材/PET.BIN
+1d1aef4fdffd3a0e5855e17cc1c1345c24be461a26146e9f7039468082408e04  collection/game-hub-v5/ips-game-hub-v5.bin
+eaec219bcd05e492c7615da8c0cf7e9a66fa7a71e1b00464d98bcc9860e6c7be  collection/game-hub-v5/素材/AVATAR.BIN
+a81da004f5006b86b249cb0e32dd35a5f424307fc2c25f57dc4d238127554725  collection/game-hub-v5/素材/BOSS.BIN
+5fd68e9a76cdcd27f32ba3a552ffc87f4207524890a13d3a096a06253dfe2c91  collection/game-hub-v5/素材/FIGHT.BIN
+68dd3e29d33d44dad5157f721bcb4c299f72530960e82d3a3726b68bb34cea29  collection/game-hub-v5/素材/PET.BIN

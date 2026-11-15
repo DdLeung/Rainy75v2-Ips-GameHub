@@ -1,9 +1,9 @@
 {
-  "name": "game-hub-v4",
+  "name": "game-hub-v5",
   "original_sha256": "32defab7902e57eb972a577fc6cbf3a7e57bc772d59b99f11038370412b77f41",
-  "candidate_sha256": "6e918ec7df405385b6e98a902a640b4ca9d65a2d1995e58ccbcc1d854aece8e1",
+  "candidate_sha256": "1d1aef4fdffd3a0e5855e17cc1c1345c24be461a26146e9f7039468082408e04",
   "original_bytes": 502925,
-  "candidate_bytes": 583684,
+  "candidate_bytes": 584188,
   "flash_base": "0x8004000",
   "hot_code": [
     "0x807ed00",
@@ -11,9 +11,9 @@
   ],
   "code": [
     "0x8080000",
-    "0x8092804"
+    "0x80929fa"
   ],
-  "image_end": "0x8092804",
+  "image_end": "0x80929fc",
   "needs": "extended flasher (image larger than 507,904 bytes); a 320x172 custom GIF playing on the screen",
   "state_start": "0x20050b00",
   "state_reserved_bytes": 256,
@@ -76,11 +76,11 @@
     "dispatch_hook": "0x8080469",
     "draw_hook": "0x808084b",
     "fight_init": "0x8084853",
-    "heatmap_init": "0x808d8cb",
+    "heatmap_init": "0x808dac3",
     "hub_read": "0x8080001",
     "key_hook": "0x80805e5",
-    "maid_init": "0x808e8f1",
-    "maidbig_init": "0x808f769",
+    "maid_init": "0x808eae9",
+    "maidbig_init": "0x808f961",
     "pet_init": "0x80888fd",
     "rain_init": "0x808c0f1",
     "snake_init": "0x80810d7",
@@ -189,7 +189,7 @@
       "data": 0
     },
     "rain": {
-      "code": 6641,
+      "code": 7143,
       "hot": 472,
       "data": 0
     },
