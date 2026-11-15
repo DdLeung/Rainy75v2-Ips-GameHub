@@ -1,7 +1,7 @@
-# Rainy75 V2 IPS 螢幕固件合集
+# Rainy75 V2 IPS GameHub
 
-Rainy75 V2 鍵盤 IPS 小螢幕（320×172）的非官方固件，以及在瀏覽器裡就能用的燒錄工具和素材安裝工具。
-只改螢幕，不動鍵盤主控和接收器；隨時可以刷回原廠固件。所有畫面都在鍵盤裡運行，不需要在電腦上開任何程式。
+把 Rainy75 V2 鍵盤的 IPS 小螢幕（320×172）變成一台「小霸王遊戲機」：**一個固件裡裝很多小遊戲，開機就是遊戲選單**，之後會持續加入新遊戲。
+只改螢幕，不動鍵盤主控和接收器；所有遊戲都在鍵盤裡運行，不需要在電腦上開任何程式；隨時可以刷回原廠固件。
 
 ## Game Hub：一個固件，10 個小遊戲
 
@@ -107,22 +107,9 @@ Rainy75 的 75% 配列縮圖：按下的鍵會亮一下，鍵帽底色代表按�
 
 ---
 
-## 單獨固件
-
-只想要其中一個畫面、不要選單的話，也可以刷單獨的固件（同一個燒錄工具，同樣需要播放 320×172 的 GIF）。
-
-| 固件 | 內容 | SHA-256 開頭 |
-|---|---|---|
-| [`fight-v2`](firmware/collection/fight-v2/) | 猛男 vs 哥布林（開機直接進遊戲） | `ce8e50e4` |
-| [`maid-hop-v1`](firmware/collection/maid-hop-v1/) | 粉色女僕 按鍵飛行，60fps | `24d91708` |
-| [`maid-bighead-v1`](firmware/collection/maid-bighead-v1/) | 粉色女僕 大頭版，60fps | `55aa472e` |
-| [`stock`](firmware/stock/) | 原廠 IPS v2，恢復用 | `32defab7` |
-
-完整雜湊見 [`firmware/SHA256SUMS.txt`](firmware/SHA256SUMS.txt)。燒錄工具選檔後會顯示固件名稱和 SHA-256，請核對一致再燒。
-
 ## 恢復原廠
 
-同一個燒錄工具選 `firmware/stock/ips-original-v2.bin` 刷回即可。外置 Flash 裡的素材檔不影響原廠固件。
+同一個燒錄工具選 [`firmware/stock/ips-original-v2.bin`](firmware/stock/) 刷回即可（SHA-256 開頭 `32defab7`，完整雜湊見 [`firmware/SHA256SUMS.txt`](firmware/SHA256SUMS.txt)）。外置 Flash 裡的素材檔不影響原廠固件。
 
 ## 免責聲明
 
