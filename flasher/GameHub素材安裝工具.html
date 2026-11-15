@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Game Hub 素材安裝工具</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Tahoma, 'Microsoft JhengHei', 'PingFang TC', sans-serif;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); min-height: 100vh; padding: 20px;
+    display: flex; justify-content: center; align-items: flex-start; color: #333; }
+  .container { width: 100%; max-width: 760px; background: #fff; border-radius: 18px; overflow: hidden;
+    box-shadow: 0 15px 35px rgba(50,50,93,.12), 0 5px 15px rgba(0,0,0,.07); }
+  .header { background: linear-gradient(to right, #4b6cb7, #182848); color: #fff; padding: 22px; text-align: center; }
+  .header h1 { font-size: 20px; font-weight: 600; }
+  .header p { font-size: 12px; opacity: .85; margin-top: 4px; }
+  .body { padding: 22px; }
+  h2 { font-size: 15px; margin: 4px 0 10px; color: #182848; }
+  .step { margin-bottom: 20px; }
+  .drop { border: 2px dashed #9bb0d8; border-radius: 12px; padding: 18px; text-align: center; color: #5a6b8c;
+    font-size: 13px; cursor: pointer; transition: .15s; }
+  .drop.over { background: #f4f7fd; border-color: #4b6cb7; }
+  table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
+  th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid #eef2f9; }
+  th { color: #7a8699; font-weight: 600; font-size: 12px; }
+  td.r { text-align: right; font-family: Consolas, monospace; }
+  .tag { font-size: 12px; font-weight: 600; } .tag.ok { color: #1b7f3b; } .tag.err { color: #b03a2e; } .tag.dim { color: #9aa5b8; }
+  button { border: 0; border-radius: 10px; padding: 11px 18px; font-size: 14px; cursor: pointer; font-family: inherit; }
+  button:disabled { opacity: .45; cursor: not-allowed; }
+  .primary { background: #4b6cb7; color: #fff; } .primary:hover:not(:disabled) { background: #3c5896; }
+  .ghost { background: #eef2f9; color: #35507f; }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .status { margin: 14px 0 8px; font-size: 13px; font-weight: 600; }
+  .bar { height: 12px; background: #eef2f9; border-radius: 6px; overflow: hidden; }
+  .bar > div { height: 100%; width: 0; background: linear-gradient(90deg,#4b6cb7,#6f8fd8); }
+  #log { margin-top: 14px; background: #0f1523; color: #b9c8e4; border-radius: 10px; padding: 12px; height: 200px;
+    overflow-y: auto; font-family: Consolas, monospace; font-size: 12px; line-height: 1.6; white-space: pre-wrap; }
+  .lok { color: #3ddc84; } .lerr { color: #ff6b6b; } .lwarn { color: #ffd166; }
+  .banner { display: none; margin: 12px 0 0; padding: 14px 16px; border-radius: 10px; font-size: 15px; font-weight: 700; line-height: 1.5; }
+  .banner.ok { display: block; background: #e6f9ee; color: #1b7f3b; border: 2px solid #3ddc84; }
+  .banner.err { display: block; background: #fdeceb; color: #b03a2e; border: 2px solid #ff6b6b; }
+  .tip { font-size: 12px; color: #7a8699; margin-top: 10px; line-height: 1.8; }
+  code { background: #eef2f9; padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>Game Hub 素材安裝工具</h1>
+    <p>把遊戲圖片素材（.BIN）裝進鍵盤螢幕的外置 Flash · 用 Chrome / Edge 開啟 · macOS 與 Windows 皆可</p>
+  </div>
+  <div class="body">
+    <div class="step">
+      <h2>1. 選擇素材檔</h2>
+      <div class="drop" id="drop">把 <code>.BIN</code> 檔拖到這裡，或<b>點這裡選擇</b>（可一次選多個）
+        <input type="file" id="pick" accept=".bin,.BIN" multiple hidden></div>
+      <table id="files"><thead><tr><th>檔案</th><th>遊戲</th><th style="text-align:right">大小</th><th>檢查</th><th>安裝</th></tr></thead><tbody></tbody></table>
+    </div>
+    <div class="step">
+      <h2>2. 連接並安裝</h2>
+      <div class="row">
+        <button class="primary" id="go" disabled>連接鍵盤並安裝</button>
+        <span class="tip" style="margin:0">鍵盤要用 <b>USB 線</b>連接（接收器、藍牙都不行）</span>
+      </div>
+      <div class="status" id="status">尚未開始</div>
+      <div class="bar"><div id="bar"></div></div>
+      <div class="banner" id="banner"></div>
+      <div id="log"></div>
+      <p class="tip">
+        · 先關掉官方網頁驅動和其他會連鍵盤的程式（例如 claude-hop 後台）。<br>
+        · 螢幕上如果正在玩遊戲，先在遊戲中連按 3 次 Esc 回選單再安裝。<br>
+        · 檔案一個一個傳，檔案之間會停 2 秒；某個檔卡住會自動重傳（最多 3 次）。中斷不會弄壞螢幕上原有的檔案。<br>
+        · 裝完在 Game Hub 選單按一下 ↑ 或 ↓，遊戲旁的 NO FILE 會消失。
+      </p>
+    </div>
+  </div>
+</div>
+<script>
+// ==PROTOCOL== (no DOM below this line until ==END==; test_installer.mjs runs this part in Node)
+const GAMES = [{"id": "avatar", "name": "YUXI SNAKER", "asset": {"file": "AVATAR.BIN", "magic": "AVS1", "count": 77, "head_max": 512, "format": "8bpp"}}, {"id": "fight", "name": "MUSCLE VS GOBLIN", "asset": {"file": "FIGHT.BIN", "magic": "FGA1", "count": 40, "head_max": 2048, "format": "4bpp"}}, {"id": "boss", "name": "TYPING BOSS", "asset": {"file": "BOSS.BIN", "magic": "TBA1", "count": 34, "head_max": 1024, "format": "4bpp"}}, {"id": "pet", "name": "TYPING PET", "asset": {"file": "PET.BIN", "magic": "TPA1", "count": 47, "head_max": 512, "format": "4bpp"}}];
+const VID = 0x36B0, PID = 0x3075, REPORT = 256, CHUNK = 232;
+const BEGIN = 1, DATA = 2, END = 3, ABORT = 4;
+const ACK_READ = [0xBE, 0xE4, 0x0A, 0x84, 0x04, 0x00, 0x00, 0x34, 0x02, 0xED];
+const STATUS = {2: '螢幕無法建立暫存檔', 4: '外置 Flash 空間不夠', 5: '檔名或大小不符', 8: '螢幕還沒準備好接收（請用 USB 線、關掉其他工具、螢幕回到選單）'};
+const TIMING = {pause: 2000, retryWait: 3000, tries: 3, stepTimeout: 8000, ackTimeout: 500, poll: 15};
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+function crc16(bytes) {
+  let crc = 0xFFFF;
+  for (const v of bytes) { crc ^= v << 8; for (let i = 0; i < 8; i++) crc = (crc & 0x8000 ? (crc << 1) ^ 0x1021 : crc << 1) & 0xFFFF; }
+  return crc;
+}
+function frame(sub, a = 0, b = 0, c = 0, payload = []) {
+  const p = new Uint8Array(11 + payload.length);
+  if (p.length > 255) throw Error('packet too large');
+  p.set([0xBE, 0x1A, p.length, sub, a, b, c, 0]); p.set(payload, 8);
+  let s = 0; for (let i = 3; i < p.length - 3; i++) s = (s + p[i]) & 0xFFFF;
+  p[p.length - 3] = s & 255; p[p.length - 2] = s >> 8; p[p.length - 1] = 0xED;
+  return p;
+}
+function name83(name) {
+  const m = /^([A-Z0-9_]{1,8})\.(BIN)$/.exec(name.toUpperCase());
+  if (!m) throw Error(name + '：檔名必須是 8.3 格式（A-Z 0-9 _）且副檔名為 .BIN');
+  return new TextEncoder().encode(m[1].padEnd(8, ' ') + m[2]);
+}
+function parseAck(d) {
+  let p = d;
+  if (p.length > 1 && p[0] === 0 && p[1] === 0xBE) p = p.subarray(1);
+  if (p.length < 14 || p[0] !== 0xBE || p[1] !== 0xE4 || p[2] !== 0x0E || p[3] !== 0x84 || p[4] !== 4 || p[5] || p[6] || p[13] !== 0xED) return null;
+  const got = p[11] | p[12] << 8; let s = 0; for (let i = 0; i < 11; i++) s = (s + p[i]) & 0xFFFF;
+  if (got !== s && got !== 0x0357) return null;
+  return {sub: p[7], status: p[8], value: p[9] | p[10] << 8};
+}
+/* Same rules as install_assets.py blob_ok(): null if the hub can use the file, else what is wrong. */
+function blobProblem(d, g) {
+  const a = g.asset, dv = new DataView(d.buffer, d.byteOffset, d.byteLength);
+  if (d.length < 12 || String.fromCharCode(...d.subarray(0, 4)) !== a.magic) return `不是 ${a.magic} 素材檔`;
+  const n = dv.getUint32(4, true), first = dv.getUint32(8, true);
+  if (n !== a.count) return `${n} 張圖，這個遊戲要 ${a.count} 張（版本不符？）`;
+  if (first < 8 + 4 * n || first > a.head_max) return '檔頭大小不符';
+  for (let i = 0; i < n; i++) {
+    const o = dv.getUint32(8 + 4 * i, true);
+    if (o < first || o + 10 > d.length) return `第 ${i} 張圖超出檔案`;
+    const w = dv.getUint16(o, true), h = dv.getUint16(o + 2, true), pv = dv.getUint16(o + 8, true);
+    if (!(w > 0 && w <= 320 && h > 0 && h <= 172)) return `第 ${i} 張圖尺寸不對`;
+    const size = a.format === '8bpp' ? 10 + 2 * pv + w * h : 10 + ((w + 1) >> 1) * h;
+    if (o + size > d.length) return `第 ${i} 張圖資料不完整`;
+    if (a.format !== '8bpp' && pv + 32 > first) return `第 ${i} 張圖調色盤不對`;
+  }
+  return null;
+}
+function gameFor(name) { return GAMES.find(g => g.asset.file === name.toUpperCase()) || null; }
+
+/* The keyboard's APP HID interface. dev: an opened HIDDevice (or a fake with sendReport + inputreport events). */
+class Link {
+  constructor(dev) {
+    this.dev = dev; this.queue = []; this.waiter = null;
+    dev.addEventListener('inputreport', e => {
+      const a = parseAck(new Uint8Array(e.data.buffer, e.data.byteOffset, e.data.byteLength));
+      if (!a) return;
+      if (this.waiter) { const w = this.waiter; this.waiter = null; w(a); } else this.queue.push(a);
+    });
+  }
+  async send(packet) { const p = new Uint8Array(REPORT); p.set(packet); await this.dev.sendReport(0, p); }
+  async ack() {
+    this.queue.length = 0;
+    const got = new Promise(r => { this.waiter = r; });
+    await this.send(ACK_READ);
+    const t = sleep(TIMING.ackTimeout).then(() => null);
+    const a = await Promise.race([got, t]); this.waiter = null; return a;
+  }
+  async stock(packet) {
+    const sub = packet[3], seq = packet[4] | packet[5] << 8;
+    await this.send(packet);
+    const end = Date.now() + TIMING.stepTimeout; let last = null;
+    while (Date.now() < end) {
+      const a = await this.ack();
+      if (a) {
+        last = a;
+        if (a.sub === sub && a.status !== 255 && (sub !== DATA || a.value === seq)) {
+          if (a.status === 0 || (sub === BEGIN && a.status === 6)) return a;
+          const e = Error(`第 ${sub} 步被拒絕，狀態 ${a.status}：${STATUS[a.status] || '未知狀態'}`); e.refused = true; throw e;
+        }
+      }
+      await sleep(TIMING.poll);
+    }
+    const what = sub === DATA ? `第 ${seq} 包資料` : ({1: '開始指令', 3: '結束指令', 4: '中止指令'})[sub] || sub;
+    throw Error(`${what}等了 ${TIMING.stepTimeout / 1000} 秒沒有回應（最後回覆 ${JSON.stringify(last)}）`);
+  }
+  async upload(name, data, progress = () => {}) {
+    const crc = crc16(data), begin = new Uint8Array(17);
+    begin.set(name83(name)); new DataView(begin.buffer).setUint32(11, data.length, true); new DataView(begin.buffer).setUint16(15, crc, true);
+    let ok = false;
+    try {
+      await this.stock(frame(BEGIN, 0, 0, 0, begin));
+      const n = Math.ceil(data.length / CHUNK);
+      for (let seq = 0; seq < n; seq++) {
+        await this.stock(frame(DATA, seq & 255, seq >> 8, 0, data.subarray(seq * CHUNK, (seq + 1) * CHUNK)));
+        progress((seq + 1) / n);
+      }
+      await this.stock(frame(END, 0, 0, 0, [crc & 255, crc >> 8]));
+      ok = true;
+    } finally {
+      if (!ok) { try { const t = TIMING.stepTimeout; TIMING.stepTimeout = 2000; try { await this.stock(frame(ABORT)); } finally { TIMING.stepTimeout = t; } } catch (e) {} }
+    }
+  }
+}
+/* Upload each file, up to TIMING.tries times; files are independent. Returns {name: true/false}. */
+async function installAll(link, files, log = () => {}, progress = () => {}) {
+  const result = {};
+  for (let k = 0; k < files.length; k++) {
+    const {name, data} = files[k];
+    if (k) await sleep(TIMING.pause);
+    result[name] = false;
+    for (let attempt = 1; attempt <= TIMING.tries; attempt++) {
+      try {
+        log(`${name}：第 ${attempt} 次上傳…`);
+        await link.upload(name, data, f => progress(k, f));
+        result[name] = true; log(`${name}：完成`, 'ok'); break;
+      } catch (e) {
+        log(`${name}：失敗 — ${e.message}`, 'err');
+        if (attempt < TIMING.tries) { log(`${TIMING.retryWait / 1000} 秒後重傳 ${name}`, 'warn'); await sleep(TIMING.retryWait); }
+      }
+    }
+  }
+  return result;
+}
+// ==END==
+
+const $ = id => document.getElementById(id);
+const picked = new Map();        // name -> {name, data, game, problem, state}
+function fmt(n) { return n >= 1024 ? (n / 1024).toFixed(1) + ' KB' : n + ' B'; }
+function render() {
+  const tb = $('files').querySelector('tbody'); tb.innerHTML = '';
+  for (const g of GAMES) if (!picked.has(g.asset.file)) picked.set(g.asset.file, {name: g.asset.file, data: null, game: g, problem: null, state: ''});
+  for (const f of picked.values()) {
+    const tr = document.createElement('tr');
+    const check = !f.data ? '<span class="tag dim">未選擇</span>' : f.problem ? `<span class="tag err">✗ ${f.problem}</span>` : '<span class="tag ok">✓</span>';
+    tr.innerHTML = `<td><code>${f.name}</code></td><td>${f.game ? f.game.name : '—'}</td><td class="r">${f.data ? fmt(f.data.length) : ''}</td><td>${check}</td><td>${f.state}</td>`;
+    tb.appendChild(tr);
+  }
+  $('go').disabled = ![...picked.values()].some(f => f.data && !f.problem);
+}
+async function add(fileList) {
+  for (const file of fileList) {
+    const name = file.name.toUpperCase(), data = new Uint8Array(await file.arrayBuffer()), game = gameFor(name);
+    const problem = !game ? '不是 Game Hub 的素材檔名' : blobProblem(data, game);
+    picked.set(name, {name, data, game, problem, state: ''});
+  }
+  render();
+}
+function log(msg, cls) {
+  const d = document.createElement('div'); if (cls) d.className = 'l' + cls;
+  d.textContent = new Date().toLocaleTimeString() + '  ' + msg; $('log').appendChild(d); $('log').scrollTop = 1e9;
+}
+$('drop').onclick = () => $('pick').click();
+$('pick').onchange = e => add(e.target.files);
+$('drop').ondragover = e => { e.preventDefault(); $('drop').classList.add('over'); };
+$('drop').ondragleave = () => $('drop').classList.remove('over');
+$('drop').ondrop = e => { e.preventDefault(); $('drop').classList.remove('over'); add(e.dataTransfer.files); };
+$('go').onclick = async () => {
+  const files = [...picked.values()].filter(f => f.data && !f.problem);
+  $('banner').className = 'banner'; $('go').disabled = true;
+  if (!navigator.hid) { log('這個瀏覽器不支援 WebHID：請用桌面版 Chrome 或 Edge 開啟。', 'err'); render(); return; }
+  let dev;
+  try {
+    const list = await navigator.hid.requestDevice({filters: [{vendorId: VID, productId: PID, usagePage: 0xFF60, usage: 0x61}]});
+    dev = list.find(d => d.collections.some(c => c.usagePage === 0xFF60 && c.usage === 0x61));
+    if (!dev) throw Error('沒有選到鍵盤（請選 USB 線連接的 Rainy75）');
+    if (!dev.opened) await dev.open();
+  } catch (e) { log(e.message, 'err'); render(); return; }
+  log(`已連接：${dev.productName || 'Rainy75'}`, 'ok');
+  const link = new Link(dev), total = files.reduce((s, f) => s + f.data.length, 0);
+  let done = 0;
+  const res = await installAll(link, files, (m, c) => {
+    log(m, c);
+    const f = files.find(x => m.startsWith(x.name));
+    if (f) { f.state = c === 'ok' ? '<span class="tag ok">已安裝</span>' : c === 'err' ? '<span class="tag err">失敗</span>' : '傳送中…'; render(); }
+  }, (k, frac) => {
+    const before = files.slice(0, k).reduce((s, f) => s + f.data.length, 0);
+    done = before + frac * files[k].data.length;
+    $('bar').style.width = (100 * done / total).toFixed(1) + '%';
+    $('status').textContent = `${files[k].name}  ${Math.round(frac * 100)}%`;
+  });
+  try { await dev.close(); } catch (e) {}
+  const failed = Object.keys(res).filter(n => !res[n]);
+  $('status').textContent = failed.length ? '有檔案沒裝好' : '全部完成';
+  $('banner').className = 'banner ' + (failed.length ? 'err' : 'ok');
+  $('banner').textContent = failed.length ? `失敗：${failed.join('、')}。可以再按一次「連接鍵盤並安裝」重試。`
+                                          : '全部安裝完成！在 Game Hub 選單按一下 ↑ 或 ↓，NO FILE 就會消失。';
+  render();
+};
+render();
+</script>
+</body>
+</html>

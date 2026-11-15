@@ -1,0 +1,213 @@
+{
+  "name": "game-hub-v4",
+  "original_sha256": "32defab7902e57eb972a577fc6cbf3a7e57bc772d59b99f11038370412b77f41",
+  "candidate_sha256": "6e918ec7df405385b6e98a902a640b4ca9d65a2d1995e58ccbcc1d854aece8e1",
+  "original_bytes": 502925,
+  "candidate_bytes": 583684,
+  "flash_base": "0x8004000",
+  "hot_code": [
+    "0x807ed00",
+    "0x807fb84"
+  ],
+  "code": [
+    "0x8080000",
+    "0x8092804"
+  ],
+  "image_end": "0x8092804",
+  "needs": "extended flasher (image larger than 507,904 bytes); a 320x172 custom GIF playing on the screen",
+  "state_start": "0x20050b00",
+  "state_reserved_bytes": 256,
+  "original_changed_bytes": 21,
+  "patches": [
+    {
+      "address": "0x8004000",
+      "before": "000c0520",
+      "after": "000b0520",
+      "purpose": "reserve top 256 stack bytes: hub state 0x20050B00, game state 0x20050B80"
+    },
+    {
+      "address": "0x807a60e",
+      "before": "e6f7abff",
+      "after": "05f0cbff",
+      "purpose": "boot_hook",
+      "target": "0x80805a9"
+    },
+    {
+      "address": "0x805b5b8",
+      "before": "fef778f8",
+      "after": "24f056ff",
+      "purpose": "dispatch_hook",
+      "target": "0x8080469"
+    },
+    {
+      "address": "0x805ac1a",
+      "before": "02f06afd",
+      "after": "25f016fe",
+      "purpose": "draw_hook",
+      "target": "0x808084b"
+    },
+    {
+      "address": "0x805b282",
+      "before": "02f036fa",
+      "after": "25f0e2fa",
+      "purpose": "draw_hook",
+      "target": "0x808084b"
+    },
+    {
+      "address": "0x805b462",
+      "before": "fff706fc",
+      "after": "25f0bff8",
+      "purpose": "key_hook",
+      "target": "0x80805e5"
+    },
+    {
+      "address": "0x807a760",
+      "before": "e0f770fd",
+      "after": "06f00ffb",
+      "purpose": "tick_hook",
+      "target": "0x8080d83"
+    }
+  ],
+  "symbols": {
+    "avatar_init": "0x8082bd9",
+    "boot_hook": "0x80805a9",
+    "boss_init": "0x8086001",
+    "combo_init": "0x808a189",
+    "dispatch_hook": "0x8080469",
+    "draw_hook": "0x808084b",
+    "fight_init": "0x8084853",
+    "heatmap_init": "0x808d8cb",
+    "hub_read": "0x8080001",
+    "key_hook": "0x80805e5",
+    "maid_init": "0x808e8f1",
+    "maidbig_init": "0x808f769",
+    "pet_init": "0x80888fd",
+    "rain_init": "0x808c0f1",
+    "snake_init": "0x80810d7",
+    "tick_hook": "0x8080d83"
+  },
+  "controls": {
+    "menu": "Up / Down choose (scrolling list, 5 rows), Enter starts",
+    "back to the menu": "Esc three times within 1.5 s"
+  },
+  "games": [
+    {
+      "id": "snake",
+      "name": "SNAKE",
+      "asset": null
+    },
+    {
+      "id": "avatar",
+      "name": "YUXI SNAKER",
+      "asset": "AVATAR.BIN"
+    },
+    {
+      "id": "fight",
+      "name": "MUSCLE VS GOBLIN",
+      "asset": "FIGHT.BIN"
+    },
+    {
+      "id": "boss",
+      "name": "TYPING BOSS",
+      "asset": "BOSS.BIN"
+    },
+    {
+      "id": "pet",
+      "name": "TYPING PET",
+      "asset": "PET.BIN"
+    },
+    {
+      "id": "combo",
+      "name": "COMBO COUNTER",
+      "asset": null
+    },
+    {
+      "id": "rain",
+      "name": "LETTER RAIN",
+      "asset": null
+    },
+    {
+      "id": "heatmap",
+      "name": "KEY HEATMAP",
+      "asset": null
+    },
+    {
+      "id": "maid",
+      "name": "MAID YUXI",
+      "asset": null
+    },
+    {
+      "id": "maidbig",
+      "name": "BIGHEAD MAID YUXI",
+      "asset": null
+    }
+  ],
+  "asset_files": {
+    "AVATAR.BIN": "YUXI SNAKER",
+    "FIGHT.BIN": "MUSCLE VS GOBLIN",
+    "BOSS.BIN": "TYPING BOSS",
+    "PET.BIN": "TYPING PET"
+  },
+  "vendor_calls": {
+    "f_open": "0x0803C805",
+    "f_read": "0x0803CCC9",
+    "f_lseek": "0x0803D099",
+    "f_close": "0x0803D075",
+    "malloc": "0x08025C09",
+    "free": "0x0802AB35",
+    "mem_monitor": "0x0805A545"
+  },
+  "game_sizes": {
+    "snake": {
+      "code": 7279,
+      "hot": 116,
+      "data": 0
+    },
+    "avatar": {
+      "code": 7475,
+      "hot": 470,
+      "data": 0
+    },
+    "fight": {
+      "code": 6304,
+      "hot": 572,
+      "data": 0
+    },
+    "boss": {
+      "code": 11109,
+      "hot": 500,
+      "data": 0
+    },
+    "pet": {
+      "code": 6774,
+      "hot": 520,
+      "data": 0
+    },
+    "combo": {
+      "code": 8722,
+      "hot": 120,
+      "data": 0
+    },
+    "rain": {
+      "code": 6641,
+      "hot": 472,
+      "data": 0
+    },
+    "heatmap": {
+      "code": 6936,
+      "hot": 116,
+      "data": 0
+    },
+    "maid": {
+      "code": 4700,
+      "hot": 0,
+      "data": 0
+    },
+    "maidbig": {
+      "code": 5248,
+      "hot": 0,
+      "data": 0
+    }
+  },
+  "install_assets": "flasher/GameHub素材安裝工具.html (Chrome / Edge, WebHID)"
+}
