@@ -1,9 +1,9 @@
 {
-  "name": "game-hub-v5",
+  "name": "game-hub-v6",
   "original_sha256": "32defab7902e57eb972a577fc6cbf3a7e57bc772d59b99f11038370412b77f41",
-  "candidate_sha256": "1d1aef4fdffd3a0e5855e17cc1c1345c24be461a26146e9f7039468082408e04",
+  "candidate_sha256": "a11c7dafaf1f3346e8ed4a2b61be161421cc3a47570b4d9b680adeaef5a9b2ac",
   "original_bytes": 502925,
-  "candidate_bytes": 584188,
+  "candidate_bytes": 690476,
   "flash_base": "0x8004000",
   "hot_code": [
     "0x807ed00",
@@ -11,9 +11,9 @@
   ],
   "code": [
     "0x8080000",
-    "0x80929fa"
+    "0x80ac92a"
   ],
-  "image_end": "0x80929fc",
+  "image_end": "0x80ac92c",
   "needs": "extended flasher (image larger than 507,904 bytes); a 320x172 custom GIF playing on the screen",
   "state_start": "0x20050b00",
   "state_reserved_bytes": 256,
@@ -42,16 +42,16 @@
     {
       "address": "0x805ac1a",
       "before": "02f06afd",
-      "after": "25f016fe",
+      "after": "25f011fe",
       "purpose": "draw_hook",
-      "target": "0x808084b"
+      "target": "0x8080841"
     },
     {
       "address": "0x805b282",
       "before": "02f036fa",
-      "after": "25f0e2fa",
+      "after": "25f0ddfa",
       "purpose": "draw_hook",
-      "target": "0x808084b"
+      "target": "0x8080841"
     },
     {
       "address": "0x805b462",
@@ -63,32 +63,38 @@
     {
       "address": "0x807a760",
       "before": "e0f770fd",
-      "after": "06f00ffb",
+      "after": "06f009fb",
       "purpose": "tick_hook",
-      "target": "0x8080d83"
+      "target": "0x8080d77"
     }
   ],
   "symbols": {
-    "avatar_init": "0x8082bd9",
+    "aqua_init": "0x80a047d",
+    "avatar_init": "0x8082bc9",
     "boot_hook": "0x80805a9",
-    "boss_init": "0x8086001",
-    "combo_init": "0x808a189",
+    "boss_init": "0x8085ff1",
+    "codemaster_init": "0x80907c5",
+    "combo_init": "0x808a179",
     "dispatch_hook": "0x8080469",
-    "draw_hook": "0x808084b",
-    "fight_init": "0x8084853",
-    "heatmap_init": "0x808dac3",
+    "draw_hook": "0x8080841",
+    "fight_init": "0x8084843",
+    "guard_init": "0x8093a97",
+    "heatmap_init": "0x808dab3",
     "hub_read": "0x8080001",
     "key_hook": "0x80805e5",
-    "maid_init": "0x808eae9",
-    "maidbig_init": "0x808f961",
-    "pet_init": "0x80888fd",
-    "rain_init": "0x808c0f1",
-    "snake_init": "0x80810d7",
-    "tick_hook": "0x8080d83"
+    "maid_init": "0x808ead9",
+    "maidbig_init": "0x808f951",
+    "officecat_init": "0x80a473b",
+    "pet_init": "0x80888ed",
+    "rain_init": "0x808c0e1",
+    "snake_init": "0x80810c7",
+    "tick_hook": "0x8080d77",
+    "tug_init": "0x8097c03",
+    "wobqc_init": "0x809b807"
   },
   "controls": {
     "menu": "Up / Down choose (scrolling list, 5 rows), Enter starts",
-    "back to the menu": "Esc three times within 1.5 s"
+    "back to the menu": "Esc five times within 2 s"
   },
   "games": [
     {
@@ -140,13 +146,48 @@
       "id": "maidbig",
       "name": "BIGHEAD MAID YUXI",
       "asset": null
+    },
+    {
+      "id": "codemaster",
+      "name": "CODE MASTER",
+      "asset": null
+    },
+    {
+      "id": "guard",
+      "name": "KEY GUARD",
+      "asset": "GUARD.BIN"
+    },
+    {
+      "id": "tug",
+      "name": "TUG OF WAR",
+      "asset": "TUG.BIN"
+    },
+    {
+      "id": "wobqc",
+      "name": "WOB QC",
+      "asset": "WOBQC.BIN"
+    },
+    {
+      "id": "aqua",
+      "name": "KEYQUARIUM",
+      "asset": "AQUA.BIN"
+    },
+    {
+      "id": "officecat",
+      "name": "OFFICE CAT",
+      "asset": "OFFCAT.BIN"
     }
   ],
   "asset_files": {
     "AVATAR.BIN": "YUXI SNAKER",
     "FIGHT.BIN": "MUSCLE VS GOBLIN",
     "BOSS.BIN": "TYPING BOSS",
-    "PET.BIN": "TYPING PET"
+    "PET.BIN": "TYPING PET",
+    "GUARD.BIN": "KEY GUARD",
+    "TUG.BIN": "TUG OF WAR",
+    "WOBQC.BIN": "WOB QC",
+    "AQUA.BIN": "KEYQUARIUM",
+    "OFFCAT.BIN": "OFFICE CAT"
   },
   "vendor_calls": {
     "f_open": "0x0803C805",
@@ -205,6 +246,36 @@
     },
     "maidbig": {
       "code": 5248,
+      "hot": 0,
+      "data": 0
+    },
+    "codemaster": {
+      "code": 13992,
+      "hot": 0,
+      "data": 0
+    },
+    "guard": {
+      "code": 18406,
+      "hot": 0,
+      "data": 0
+    },
+    "tug": {
+      "code": 15987,
+      "hot": 0,
+      "data": 0
+    },
+    "wobqc": {
+      "code": 20502,
+      "hot": 0,
+      "data": 0
+    },
+    "aqua": {
+      "code": 18854,
+      "hot": 0,
+      "data": 0
+    },
+    "officecat": {
+      "code": 18397,
       "hot": 0,
       "data": 0
     }
