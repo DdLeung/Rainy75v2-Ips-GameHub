@@ -1,9 +1,9 @@
 {
-  "name": "game-hub-v6",
+  "name": "game-hub-v9",
   "original_sha256": "32defab7902e57eb972a577fc6cbf3a7e57bc772d59b99f11038370412b77f41",
-  "candidate_sha256": "a11c7dafaf1f3346e8ed4a2b61be161421cc3a47570b4d9b680adeaef5a9b2ac",
+  "candidate_sha256": "a3af4db89403b0f73ff93952182ed9a5d050a78f38f16197c28fe92a07b92ec3",
   "original_bytes": 502925,
-  "candidate_bytes": 690476,
+  "candidate_bytes": 695040,
   "flash_base": "0x8004000",
   "hot_code": [
     "0x807ed00",
@@ -11,9 +11,9 @@
   ],
   "code": [
     "0x8080000",
-    "0x80ac92a"
+    "0x80adafe"
   ],
-  "image_end": "0x80ac92c",
+  "image_end": "0x80adb00",
   "needs": "extended flasher (image larger than 507,904 bytes); a 320x172 custom GIF playing on the screen",
   "state_start": "0x20050b00",
   "state_reserved_bytes": 256,
@@ -42,55 +42,56 @@
     {
       "address": "0x805ac1a",
       "before": "02f06afd",
-      "after": "25f011fe",
+      "after": "25f022fe",
       "purpose": "draw_hook",
-      "target": "0x8080841"
+      "target": "0x8080863"
     },
     {
       "address": "0x805b282",
       "before": "02f036fa",
-      "after": "25f0ddfa",
+      "after": "25f0eefa",
       "purpose": "draw_hook",
-      "target": "0x8080841"
+      "target": "0x8080863"
     },
     {
       "address": "0x805b462",
       "before": "fff706fc",
-      "after": "25f0bff8",
+      "after": "25f03ff9",
       "purpose": "key_hook",
-      "target": "0x80805e5"
+      "target": "0x80806e5"
     },
     {
       "address": "0x807a760",
       "before": "e0f770fd",
-      "after": "06f009fb",
+      "after": "06f098fb",
       "purpose": "tick_hook",
-      "target": "0x8080d77"
+      "target": "0x8080e95"
     }
   ],
   "symbols": {
-    "aqua_init": "0x80a047d",
-    "avatar_init": "0x8082bc9",
+    "aqua_init": "0x80a08bd",
+    "avatar_init": "0x8083009",
     "boot_hook": "0x80805a9",
-    "boss_init": "0x8085ff1",
-    "codemaster_init": "0x80907c5",
-    "combo_init": "0x808a179",
+    "boss_init": "0x8086431",
+    "codemaster_init": "0x8090c05",
+    "combo_init": "0x808a5b9",
     "dispatch_hook": "0x8080469",
-    "draw_hook": "0x8080841",
-    "fight_init": "0x8084843",
-    "guard_init": "0x8093a97",
-    "heatmap_init": "0x808dab3",
+    "draw_hook": "0x8080863",
+    "fight_init": "0x8084c83",
+    "guard_init": "0x8093ed7",
+    "heatmap_init": "0x808def3",
     "hub_read": "0x8080001",
-    "key_hook": "0x80805e5",
-    "maid_init": "0x808ead9",
-    "maidbig_init": "0x808f951",
-    "officecat_init": "0x80a473b",
-    "pet_init": "0x80888ed",
-    "rain_init": "0x808c0e1",
-    "snake_init": "0x80810c7",
-    "tick_hook": "0x8080d77",
-    "tug_init": "0x8097c03",
-    "wobqc_init": "0x809b807"
+    "key_hook": "0x80806e5",
+    "maid_init": "0x808ef19",
+    "maidbig_init": "0x808fd91",
+    "officecat_init": "0x80a4b7b",
+    "pet_init": "0x8088d2d",
+    "rain_init": "0x808c521",
+    "sharingan_init": "0x80a821f",
+    "snake_init": "0x8081507",
+    "tick_hook": "0x8080e95",
+    "tug_init": "0x8098043",
+    "wobqc_init": "0x809bc47"
   },
   "controls": {
     "menu": "Up / Down choose (scrolling list, 5 rows), Enter starts",
@@ -176,6 +177,11 @@
       "id": "officecat",
       "name": "OFFICE CAT",
       "asset": "OFFCAT.BIN"
+    },
+    {
+      "id": "sharingan",
+      "name": "SHARINGAN",
+      "asset": "SHARINGN.BIN"
     }
   ],
   "asset_files": {
@@ -187,7 +193,8 @@
     "TUG.BIN": "TUG OF WAR",
     "WOBQC.BIN": "WOB QC",
     "AQUA.BIN": "KEYQUARIUM",
-    "OFFCAT.BIN": "OFFICE CAT"
+    "OFFCAT.BIN": "OFFICE CAT",
+    "SHARINGN.BIN": "SHARINGAN"
   },
   "vendor_calls": {
     "f_open": "0x0803C805",
@@ -276,6 +283,11 @@
     },
     "officecat": {
       "code": 18397,
+      "hot": 0,
+      "data": 0
+    },
+    "sharingan": {
+      "code": 3412,
       "hot": 0,
       "data": 0
     }
