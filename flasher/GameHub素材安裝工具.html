@@ -3,73 +3,161 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Game Hub 素材安裝工具</title>
+<title>Game Hub 素材安裝與 Flash 管理工具</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Segoe UI', Tahoma, 'Microsoft JhengHei', 'PingFang TC', sans-serif;
     background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); min-height: 100vh; padding: 20px;
     display: flex; justify-content: center; align-items: flex-start; color: #333; }
-  .container { width: 100%; max-width: 760px; background: #fff; border-radius: 18px; overflow: hidden;
+  .container { width: 100%; max-width: 840px; background: #fff; border-radius: 18px; overflow: hidden;
     box-shadow: 0 15px 35px rgba(50,50,93,.12), 0 5px 15px rgba(0,0,0,.07); }
   .header { background: linear-gradient(to right, #4b6cb7, #182848); color: #fff; padding: 22px; text-align: center; }
   .header h1 { font-size: 20px; font-weight: 600; }
-  .header p { font-size: 12px; opacity: .85; margin-top: 4px; }
+  .header p { font-size: 12px; opacity: .88; margin-top: 4px; }
   .body { padding: 22px; }
-  h2 { font-size: 15px; margin: 4px 0 10px; color: #182848; }
-  .step { margin-bottom: 20px; }
+  h2 { font-size: 15px; margin: 4px 0 10px; color: #182848; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .step { margin-bottom: 22px; padding-bottom: 18px; border-bottom: 1px solid #eef2f9; }
+  .step:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: 0; }
+  .conn-pill { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px; background: #eef2f9; color: #64748b; }
+  .conn-pill.on { background: #e6f9ee; color: #1b7f3b; }
+  .flash-box { background: #f8fafd; border: 1px solid #dfe7f5; border-radius: 12px; padding: 14px; }
+  .cap-wrap { margin-top: 12px; }
+  .cap-head { display: flex; justify-content: space-between; align-items: baseline; font-size: 12.5px; color: #334155; margin-bottom: 6px; gap: 8px; flex-wrap: wrap; }
+  .cap-bar { height: 10px; background: #e2e8f0; border-radius: 6px; overflow: hidden; }
+  .cap-bar > div { height: 100%; width: 0; background: linear-gradient(90deg,#4b6cb7,#6f8fd8); transition: width .25s; }
+  .cap-bar > div.warn { background: linear-gradient(90deg,#e69d00,#f5b935); }
+  .cap-bar > div.high { background: linear-gradient(90deg,#d94848,#f06565); }
+  .notice { margin-top: 10px; padding: 9px 12px; border-radius: 8px; font-size: 12px; line-height: 1.6;
+    background: #fff8e6; color: #8a5a00; border: 1px solid #f3d27a; display: none; }
+  .notice.show { display: block; }
   .drop { border: 2px dashed #9bb0d8; border-radius: 12px; padding: 18px; text-align: center; color: #5a6b8c;
-    font-size: 13px; cursor: pointer; transition: .15s; }
+    font-size: 13px; cursor: pointer; transition: .15s; line-height: 1.7; }
   .drop.over { background: #f4f7fd; border-color: #4b6cb7; }
-  table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
-  th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid #eef2f9; }
-  th { color: #7a8699; font-weight: 600; font-size: 12px; }
-  td.r { text-align: right; font-family: Consolas, monospace; }
-  .tag { font-size: 12px; font-weight: 600; } .tag.ok { color: #1b7f3b; } .tag.err { color: #b03a2e; } .tag.dim { color: #9aa5b8; }
-  button { border: 0; border-radius: 10px; padding: 11px 18px; font-size: 14px; cursor: pointer; font-family: inherit; }
-  button:disabled { opacity: .45; cursor: not-allowed; }
-  .primary { background: #4b6cb7; color: #fff; } .primary:hover:not(:disabled) { background: #3c5896; }
-  .ghost { background: #eef2f9; color: #35507f; }
-  .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
-  .status { margin: 14px 0 8px; font-size: 13px; font-weight: 600; }
+  .bar-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 10px; }
+  .mini { border: 1px solid #d5dfef; border-radius: 7px; padding: 5px 10px; font-size: 12px;
+    background: #f6f9fe; color: #35507f; cursor: pointer; font-family: inherit; transition: .12s; }
+  .mini:hover:not(:disabled) { background: #e8f0fc; border-color: #4b6cb7; }
+  .mini:disabled { opacity: .45; cursor: not-allowed; }
+  .mini.danger { background: #fff5f5; border-color: #f3bcbc; color: #b03a2e; }
+  .mini.danger:hover:not(:disabled) { background: #fde8e8; border-color: #d94848; }
+  .mini.del { padding: 3px 8px; font-size: 11.5px; }
+  .summary { font-size: 12px; color: #64748b; margin-left: auto; }
+  .summary.warn { color: #b45309; font-weight: 600; }
+  table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 12.5px; }
+  th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid #eef2f9; vertical-align: middle; }
+  th { color: #7a8699; font-weight: 600; font-size: 11.5px; }
+  td.r { text-align: right; font-family: Consolas, monospace; white-space: nowrap; }
+  td.c, th.c { text-align: center; width: 34px; }
+  td.act, th.act { text-align: right; width: 64px; }
+  input[type=checkbox] { width: 15px; height: 15px; accent-color: #4b6cb7; cursor: pointer; }
+  .tag { font-size: 11.5px; font-weight: 600; white-space: nowrap; }
+  .tag.ok { color: #1b7f3b; } .tag.err { color: #b03a2e; }
+  .tag.dim { color: #9aa5b8; } .tag.skip { color: #5a6b8c; }
+  .tag.warn { color: #b45309; } .tag.miss { color: #c05621; }
+  .badge { display: inline-block; font-size: 11px; font-weight: 600; padding: 1px 7px; border-radius: 999px; }
+  .badge.gh { background: #e8f0fc; color: #2b4c8c; }
+  .badge.slot { background: #fff4d6; color: #8a5a00; }
+  .badge.other { background: #edf2f7; color: #4a5568; }
+  button.primary { border: 0; border-radius: 10px; padding: 10px 16px; font-size: 13.5px; cursor: pointer; font-family: inherit;
+    background: #4b6cb7; color: #fff; transition: .12s; }
+  button.primary:hover:not(:disabled) { background: #3c5896; }
+  button.primary:disabled { opacity: .45; cursor: not-allowed; }
+  button.secondary { border: 1px solid #cbd7ec; border-radius: 10px; padding: 9px 14px; font-size: 13px; cursor: pointer; font-family: inherit;
+    background: #fff; color: #2b4c8c; transition: .12s; }
+  button.secondary:hover:not(:disabled) { background: #f0f5fd; border-color: #4b6cb7; }
+  button.secondary:disabled { opacity: .45; cursor: not-allowed; }
+  button.danger { border: 1px solid #f0b4b4; border-radius: 10px; padding: 9px 14px; font-size: 13px; cursor: pointer; font-family: inherit;
+    background: #fff5f5; color: #b03a2e; transition: .12s; }
+  button.danger:hover:not(:disabled) { background: #fde8e8; border-color: #d94848; }
+  button.danger:disabled { opacity: .45; cursor: not-allowed; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .status { margin: 12px 0 8px; font-size: 13px; font-weight: 600; }
   .bar { height: 12px; background: #eef2f9; border-radius: 6px; overflow: hidden; }
   .bar > div { height: 100%; width: 0; background: linear-gradient(90deg,#4b6cb7,#6f8fd8); }
-  #log { margin-top: 14px; background: #0f1523; color: #b9c8e4; border-radius: 10px; padding: 12px; height: 200px;
+  #log { margin-top: 14px; background: #0f1523; color: #b9c8e4; border-radius: 10px; padding: 12px; height: 190px;
     overflow-y: auto; font-family: Consolas, monospace; font-size: 12px; line-height: 1.6; white-space: pre-wrap; }
   .lok { color: #3ddc84; } .lerr { color: #ff6b6b; } .lwarn { color: #ffd166; }
-  .banner { display: none; margin: 12px 0 0; padding: 14px 16px; border-radius: 10px; font-size: 15px; font-weight: 700; line-height: 1.5; }
+  .banner { display: none; margin: 12px 0 0; padding: 13px 15px; border-radius: 10px; font-size: 14px; font-weight: 700; line-height: 1.5; }
   .banner.ok { display: block; background: #e6f9ee; color: #1b7f3b; border: 2px solid #3ddc84; }
   .banner.err { display: block; background: #fdeceb; color: #b03a2e; border: 2px solid #ff6b6b; }
   .tip { font-size: 12px; color: #7a8699; margin-top: 10px; line-height: 1.8; }
+  .empty-hint { font-size: 12.5px; color: #64748b; padding: 10px 2px 2px; line-height: 1.6; }
   code { background: #eef2f9; padding: 1px 5px; border-radius: 4px; font-size: 12px; }
 </style>
 </head>
 <body>
 <div class="container">
   <div class="header">
-    <h1>Game Hub 素材安裝工具</h1>
-    <p>把遊戲圖片素材（.BIN）裝進鍵盤螢幕的外置 Flash · 用 Chrome / Edge 開啟 · macOS 與 Windows 皆可</p>
+    <h1>Game Hub 素材安裝與 Flash 管理工具</h1>
+    <p>查看鍵盤外置 Flash 現有檔案與剩餘空間 · 單檔刪除或一鍵騰空 · 拖入單一 .ZIP / .BIN 安裝素材</p>
   </div>
   <div class="body">
     <div class="step">
-      <h2>1. 選擇素材檔</h2>
-      <div class="drop" id="drop">把 <code>.BIN</code> 檔拖到這裡，或<b>點這裡選擇</b>（可一次選多個）
-        <input type="file" id="pick" accept=".bin,.BIN" multiple hidden></div>
-      <table id="files"><thead><tr><th>檔案</th><th>遊戲</th><th style="text-align:right">大小</th><th>檢查</th><th>安裝</th></tr></thead><tbody></tbody></table>
+      <h2>
+        <span>1. 鍵盤外置 Flash 狀態與清理</span>
+        <span class="conn-pill" id="connPill">尚未連接</span>
+      </h2>
+      <div class="flash-box">
+        <div class="row">
+          <button class="primary" id="btnRead">讀取鍵盤 Flash</button>
+          <button class="secondary" id="btnDelHub" disabled title="只刪除屬於 Game Hub 的 .BIN 素材檔，保留自訂底圖 S1-S4.GIF">一鍵清除 Game Hub 素材（保留底圖）</button>
+          <button class="danger" id="btnFormat" title="格式化整個外置 Flash，清空所有檔案以換玩法或刷別的固件">格式化清空整個 Flash</button>
+          <button class="mini" id="btnDisc" disabled style="margin-left:auto">斷開連接</button>
+        </div>
+        <div class="cap-wrap" id="capWrap" style="display:none">
+          <div class="cap-head">
+            <span id="capText"></span>
+            <span id="capSub" style="color:#64748b"></span>
+          </div>
+          <div class="cap-bar"><div id="capBar"></div></div>
+        </div>
+        <div class="notice" id="truncNotice">
+          ⚠️ 外置 Flash 檔案較多，原廠列表緩衝（256 位元組）可能未顯示全部檔案；刪除部分檔案後再按「讀取鍵盤 Flash」即可繼續查看其餘檔案。
+        </div>
+        <div id="flashEmpty" class="empty-hint">
+          點擊「讀取鍵盤 Flash」即可查看目前鍵盤外置 Flash 裡已存哪些檔案、剩餘多少空間，並可單檔移除或清空騰空容量（免重刷固件，原廠固件與其他固件亦適用）。
+        </div>
+        <table id="flashTable" style="display:none">
+          <thead><tr><th>檔案</th><th>歸屬</th><th style="text-align:right">大小</th><th class="act">操作</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
     </div>
+
     <div class="step">
-      <h2>2. 連接並安裝</h2>
+      <h2>2. 選擇 Game Hub 素材包（推薦拖入 1 個 .ZIP）</h2>
+      <div class="drop" id="drop">
+        把 <code>GameHub-全部素材包.zip</code> 拖到這裡，或<b>點這裡選擇</b><br>
+        <span style="font-size:12px;opacity:.85">也支援直接拖入單個或多個 <code>.BIN</code> 素材檔</span>
+        <input type="file" id="pick" accept=".zip,.ZIP,.bin,.BIN" multiple hidden>
+      </div>
+      <div class="bar-actions">
+        <button class="mini" id="selAll" disabled>全選已載入</button>
+        <button class="mini" id="selNew" disabled>只選缺少／有更新</button>
+        <button class="mini" id="selNone" disabled>取消全選</button>
+        <button class="mini" id="clearMem" title="若換了另一把鍵盤或想強制重傳，點此清除本機紀錄">清除本機紀錄</button>
+        <span class="summary" id="summary"></span>
+      </div>
+      <table id="files">
+        <thead><tr><th class="c">選</th><th>檔案</th><th>遊戲</th><th style="text-align:right">本地大小</th><th>鍵盤現況</th><th>檢查</th><th>安裝</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <div class="step">
+      <h2>3. 寫入素材與執行紀錄</h2>
       <div class="row">
-        <button class="primary" id="go" disabled>連接鍵盤並安裝</button>
-        <span class="tip" style="margin:0">鍵盤要用 <b>USB 線</b>連接（接收器、藍牙都不行）</span>
+        <button class="primary" id="go" disabled>安裝已勾選素材</button>
+        <span class="tip" style="margin:0">鍵盤要用 <b>USB 線</b>連接（接收器、藍牙都不行）；操作前請回到選單（遊戲中 2 秒內連按 5 次 Esc）</span>
       </div>
       <div class="status" id="status">尚未開始</div>
       <div class="bar"><div id="bar"></div></div>
       <div class="banner" id="banner"></div>
       <div id="log"></div>
       <p class="tip">
-        · 先關掉官方網頁驅動和其他會連鍵盤的程式（例如 claude-hop 後台）。<br>
-        · 螢幕上如果正在玩遊戲，先在遊戲中連按 5 次 Esc 回選單再安裝。<br>
-        · 檔案一個一個傳，檔案之間會停 2 秒；某個檔卡住會自動重傳（最多 3 次）。中斷不會弄壞螢幕上原有的檔案。<br>
+        · 先關掉官方網頁驅動和其他會連鍵盤的程式。<br>
+        · 先按「讀取鍵盤 Flash」再按「只選缺少／有更新」，會直接比對鍵盤實機 Flash 狀態，只補裝缺少或大小有變動的素材。<br>
+        · 若要換玩法／刷入別的固件並騰空全部 4 MB 外置空間，可按「一鍵清除 Game Hub 素材」（保留底圖）或「格式化清空整個 Flash」（全部清空）。<br>
         · 裝完在 Game Hub 選單按一下 ↑ 或 ↓，遊戲旁的 NO FILE 會消失。
       </p>
     </div>
@@ -77,18 +165,91 @@
 </div>
 <script>
 // ==PROTOCOL== (no DOM below this line until ==END==; test_installer.mjs runs this part in Node)
-const GAMES = [{"id": "avatar", "name": "YUXI SNAKER", "asset": {"file": "AVATAR.BIN", "magic": "AVS1", "count": 77, "head_max": 512, "format": "8bpp"}}, {"id": "fight", "name": "MUSCLE VS GOBLIN", "asset": {"file": "FIGHT.BIN", "magic": "FGA1", "count": 40, "head_max": 2048, "format": "4bpp"}}, {"id": "boss", "name": "TYPING BOSS", "asset": {"file": "BOSS.BIN", "magic": "TBA1", "count": 34, "head_max": 1024, "format": "4bpp"}}, {"id": "pet", "name": "TYPING PET", "asset": {"file": "PET.BIN", "magic": "TPA1", "count": 47, "head_max": 512, "format": "4bpp"}}, {"id": "guard", "name": "KEY GUARD", "asset": {"file": "GUARD.BIN", "magic": "KGD1", "count": 17, "head_max": 640, "format": "4bpp"}}, {"id": "tug", "name": "TUG OF WAR", "asset": {"file": "TUG.BIN", "magic": "TUG1", "count": 37, "head_max": 1400, "format": "4bpp"}}, {"id": "wobqc", "name": "WOB QC", "asset": {"file": "WOBQC.BIN", "magic": "WQC1", "count": 50, "head_max": 256, "format": "8bpp"}}, {"id": "aqua", "name": "KEYQUARIUM", "asset": {"file": "AQUA.BIN", "magic": "KQA1", "count": 38, "head_max": 192, "format": "8bpp"}}, {"id": "officecat", "name": "OFFICE CAT", "asset": {"file": "OFFCAT.BIN", "magic": "OCT1", "count": 72, "head_max": 564, "format": "8bpp"}}, {"id": "sharingan", "name": "SHARINGAN", "asset": {"file": "SHARINGN.BIN", "magic": "SHR1", "count": 46, "head_max": 1700, "format": "4bpp"}}];
+const GAMES = [{"id": "avatar", "name": "YUXI SNAKER", "asset": {"file": "AVATAR.BIN", "magic": "AVS1", "count": 77, "head_max": 512, "format": "8bpp"}}, {"id": "fight", "name": "MUSCLE VS GOBLIN", "asset": {"file": "FIGHT.BIN", "magic": "FGA1", "count": 40, "head_max": 2048, "format": "4bpp"}}, {"id": "boss", "name": "TYPING BOSS", "asset": {"file": "BOSS.BIN", "magic": "TBA1", "count": 34, "head_max": 1024, "format": "4bpp"}}, {"id": "pet", "name": "TYPING PET", "asset": {"file": "PET.BIN", "magic": "TPA1", "count": 47, "head_max": 512, "format": "4bpp"}}, {"id": "guard", "name": "KEY GUARD", "asset": {"file": "GUARD.BIN", "magic": "KGD1", "count": 17, "head_max": 640, "format": "4bpp"}}, {"id": "tug", "name": "TUG OF WAR", "asset": {"file": "TUG.BIN", "magic": "TUG1", "count": 37, "head_max": 1400, "format": "4bpp"}}, {"id": "wobqc", "name": "WOB QC", "asset": {"file": "WOBQC.BIN", "magic": "WQC1", "count": 50, "head_max": 256, "format": "8bpp"}}, {"id": "aqua", "name": "KEYQUARIUM", "asset": {"file": "AQUA.BIN", "magic": "KQA1", "count": 38, "head_max": 192, "format": "8bpp"}}, {"id": "officecat", "name": "OFFICE CAT", "asset": {"file": "OFFCAT.BIN", "magic": "OCT1", "count": 72, "head_max": 564, "format": "8bpp"}}, {"id": "sharingan", "name": "SHARINGAN", "asset": {"file": "SHARINGN.BIN", "magic": "SHR1", "count": 46, "head_max": 1700, "format": "4bpp"}}, {"id": "kurocat", "name": "KUROCAT", "asset": {"file": "KUROCAT.BIN", "magic": "KRC1", "count": 74, "head_max": 320, "format": "8bpp"}}];
 const VID = 0x36B0, PID = 0x3075, REPORT = 256, CHUNK = 232;
-const BEGIN = 1, DATA = 2, END = 3, ABORT = 4;
+const BEGIN = 1, DATA = 2, END = 3, ABORT = 4, DELETE = 5, FORMAT = 6, LIST = 10, LIST_READ = 11, DELETE_SLOT = 12;
+const FREE_PROBE_KBS = [32768, 16384, 8192, 4096, 2048, 1024];
+const LIST_TRUNC_THRESHOLD = 235;
+const SLOT_RE = /^S([1-4])\.(GIF|BIN)$/;
 const ACK_READ = [0xBE, 0xE4, 0x0A, 0x84, 0x04, 0x00, 0x00, 0x34, 0x02, 0xED];
-const STATUS = {2: '螢幕無法建立暫存檔', 4: '外置 Flash 空間不夠', 5: '檔名或大小不符', 8: '螢幕還沒準備好接收（請用 USB 線、關掉其他工具、螢幕回到選單）'};
-const TIMING = {pause: 2000, retryWait: 3000, tries: 3, stepTimeout: 8000, ackTimeout: 500, poll: 15};
+const STATUS = {
+  2: '螢幕無法建立／寫入檔案（或格式化失敗）',
+  3: '目前有上傳正在進行',
+  4: '外置 Flash 空間不夠',
+  5: '檔名或大小不符（須為 8.3 格式 .BIN/.GIF/.BMP）',
+  7: '找不到該檔案（或外置 Flash 目前沒有檔案）',
+  8: '螢幕還沒準備好（請用 USB 線、關掉其他工具、螢幕回到選單）'
+};
+const TIMING = {pause: 2000, retryWait: 3000, tries: 3, stepTimeout: 8000, formatTimeout: 20000, ackTimeout: 500, poll: 15, listReadDelay: 15};
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 function crc16(bytes) {
   let crc = 0xFFFF;
   for (const v of bytes) { crc ^= v << 8; for (let i = 0; i < 8; i++) crc = (crc & 0x8000 ? (crc << 1) ^ 0x1021 : crc << 1) & 0xFFFF; }
   return crc;
+}
+function fileSig(bytes) {
+  let h = 2166136261 >>> 0;
+  for (let i = 0; i < bytes.length; i++) h = Math.imul(h ^ bytes[i], 16777619) >>> 0;
+  return `${bytes.length}:${crc16(bytes).toString(16)}:${h.toString(16)}`;
+}
+async function inflateRaw(bytes) {
+  if (typeof DecompressionStream !== 'function') throw Error('瀏覽器不支援 ZIP 解壓（請升級新版 Chrome / Edge）');
+  const ds = new DecompressionStream('deflate-raw');
+  const w = ds.writable.getWriter();
+  w.write(bytes);
+  w.close();
+  const parts = [], reader = ds.readable.getReader();
+  let total = 0;
+  for (;;) {
+    const {value, done} = await reader.read();
+    if (done) break;
+    parts.push(value); total += value.length;
+  }
+  const out = new Uint8Array(total);
+  let off = 0;
+  for (const p of parts) { out.set(p, off); off += p.length; }
+  return out;
+}
+/* Pure-JS ZIP reader (Store method 0 + Deflate method 8 via native DecompressionStream).
+ * Extracts all .BIN files (ignoring directories and macOS __MACOSX metadata). */
+async function unpackZip(bytes) {
+  const dv = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  let eocd = -1;
+  for (let i = bytes.length - 22; i >= Math.max(0, bytes.length - 65558); i--) {
+    if (dv.getUint32(i, true) === 0x06054B50) { eocd = i; break; }
+  }
+  if (eocd < 0) throw Error('不是有效的 .ZIP 壓縮檔');
+  const count = dv.getUint16(eocd + 10, true);
+  let pos = dv.getUint32(eocd + 16, true);
+  const dec = new TextDecoder('utf-8');
+  const out = [];
+  for (let i = 0; i < count; i++) {
+    if (pos + 46 > bytes.length || dv.getUint32(pos, true) !== 0x02014B50) throw Error('ZIP 目錄區損毀');
+    const method = dv.getUint16(pos + 10, true);
+    const compSize = dv.getUint32(pos + 20, true);
+    const nameLen = dv.getUint16(pos + 28, true);
+    const extraLen = dv.getUint16(pos + 30, true);
+    const cmtLen = dv.getUint16(pos + 32, true);
+    const lfhOff = dv.getUint32(pos + 42, true);
+    const fullName = dec.decode(bytes.subarray(pos + 46, pos + 46 + nameLen));
+    pos += 46 + nameLen + extraLen + cmtLen;
+    if (fullName.endsWith('/') || fullName.includes('__MACOSX/')) continue;
+    const base = fullName.split('/').pop();
+    if (!base || base.startsWith('.') || !/\.bin$/i.test(base)) continue;
+    if (lfhOff + 30 > bytes.length || dv.getUint32(lfhOff, true) !== 0x04034B50) throw Error(`ZIP 檔案頭損毀：${base}`);
+    const lNameLen = dv.getUint16(lfhOff + 26, true);
+    const lExtraLen = dv.getUint16(lfhOff + 28, true);
+    const dataStart = lfhOff + 30 + lNameLen + lExtraLen;
+    if (dataStart + compSize > bytes.length) throw Error(`ZIP 資料不完整：${base}`);
+    const raw = bytes.subarray(dataStart, dataStart + compSize);
+    let data;
+    if (method === 0) data = Uint8Array.from(raw);
+    else if (method === 8) data = await inflateRaw(raw);
+    else throw Error(`不支援的 ZIP 壓縮方式 (${method})：${base}`);
+    out.push({name: base.toUpperCase(), data});
+  }
+  return out;
 }
 function frame(sub, a = 0, b = 0, c = 0, payload = []) {
   const p = new Uint8Array(11 + payload.length);
@@ -99,9 +260,40 @@ function frame(sub, a = 0, b = 0, c = 0, payload = []) {
   return p;
 }
 function name83(name) {
-  const m = /^([A-Z0-9_]{1,8})\.(BIN)$/.exec(name.toUpperCase());
-  if (!m) throw Error(name + '：檔名必須是 8.3 格式（A-Z 0-9 _）且副檔名為 .BIN');
+  const m = /^([A-Z0-9_]{1,8})\.(BIN|GIF|BMP)$/.exec(name.toUpperCase());
+  if (!m) throw Error(name + '：檔名必須是 8.3 格式（A-Z 0-9 _）且副檔名為 .BIN/.GIF/.BMP');
   return new TextEncoder().encode(m[1].padEnd(8, ' ') + m[2]);
+}
+function deletePacket(name) { return frame(DELETE, 0, 0, 0, name83(name)); }
+function deleteSlotPacket(slot) {
+  if (!(slot >= 1 && slot <= 4)) throw Error('槽位編號必須為 1-4');
+  return frame(DELETE_SLOT, slot, 0, 0);
+}
+function formatPacket() { return frame(FORMAT); }
+function listPacket() { return frame(LIST); }
+function listReadPacket(offset) {
+  if (!(offset >= 0 && offset <= 255)) throw Error('offset must be 0..255');
+  return frame(LIST_READ, offset & 255, 0, 0);
+}
+function freeProbePacket(kb) {
+  const pl = new Uint8Array(17);
+  pl.set(name83('PROBE.BIN'));
+  new DataView(pl.buffer).setUint32(11, kb * 1024, true);
+  new DataView(pl.buffer).setUint16(15, 0, true);
+  return frame(BEGIN, 0, 0, 0, pl);
+}
+function parseFileList(bytes) {
+  const text = new TextDecoder('ascii').decode(bytes);
+  const out = [];
+  for (const rawLine of text.split(/\r?\n/)) {
+    const line = rawLine.trim();
+    if (!line) continue;
+    const parts = line.split(/\s+/);
+    if (parts.length === 2 && /^\d+$/.test(parts[1])) {
+      out.push({name: parts[0].toUpperCase(), size: Number(parts[1])});
+    }
+  }
+  return out;
 }
 function parseAck(d) {
   let p = d;
@@ -126,7 +318,7 @@ function blobProblem(d, g) {
     const size = a.format === '8bpp' ? 10 + 2 * pv + w * h : 10 + ((w + 1) >> 1) * h;
     if (o + size > d.length) return `第 ${i} 張圖資料不完整`;
     if (a.format !== '8bpp' && pv + 32 > first) return `第 ${i} 張圖調色盤不對`;
-    if (a.format === '8bpp') {   /* pixel v uses palette entry v (entry 0 = transparent) */
+    if (a.format === '8bpp') {
       if (pv > 256) return `第 ${i} 張圖調色盤不對`;
       for (let k = o + 10 + 2 * pv, e = o + size; k < e; k++) if (d[k] >= pv) return `第 ${i} 張圖顏色超出調色盤`;
     }
@@ -134,16 +326,42 @@ function blobProblem(d, g) {
   return null;
 }
 function gameFor(name) { return GAMES.find(g => g.asset.file === name.toUpperCase()) || null; }
+function classifyFlashFile(name) {
+  const up = name.toUpperCase();
+  const g = gameFor(up);
+  if (g) return {kind: 'gamehub', label: `Game Hub · ${g.name}`, game: g};
+  const m = SLOT_RE.exec(up);
+  if (m) return {kind: 'slot', label: `自訂底圖槽位 S${m[1]}（Game Hub 需要）`, game: null, slot: Number(m[1])};
+  return {kind: 'other', label: '其他／舊版檔案', game: null};
+}
+/* Determine whether a local asset row needs uploading based on real Flash map (if read) or localStorage mem. */
+function needsUpload(f, flashMap, mem) {
+  if (!f.data || f.problem) return false;
+  if (flashMap) {
+    if (!flashMap.has(f.name)) return true;
+    const onSize = flashMap.get(f.name);
+    if (onSize !== f.data.length) return true;
+    if (mem && mem[f.name] && mem[f.name] !== f.sig) return true;
+    return false;
+  }
+  return !(mem && mem[f.name] && mem[f.name] === f.sig);
+}
 
 /* The keyboard's APP HID interface. dev: an opened HIDDevice (or a fake with sendReport + inputreport events). */
 class Link {
   constructor(dev) {
     this.dev = dev; this.queue = []; this.waiter = null;
-    dev.addEventListener('inputreport', e => {
+    this._onReport = e => {
       const a = parseAck(new Uint8Array(e.data.buffer, e.data.byteOffset, e.data.byteLength));
       if (!a) return;
       if (this.waiter) { const w = this.waiter; this.waiter = null; w(a); } else this.queue.push(a);
-    });
+    };
+    dev.addEventListener('inputreport', this._onReport);
+  }
+  detach() {
+    if (this.dev && typeof this.dev.removeEventListener === 'function') {
+      this.dev.removeEventListener('inputreport', this._onReport);
+    }
   }
   async send(packet) { const p = new Uint8Array(REPORT); p.set(packet); await this.dev.sendReport(0, p); }
   async ack() {
@@ -153,23 +371,78 @@ class Link {
     const t = sleep(TIMING.ackTimeout).then(() => null);
     const a = await Promise.race([got, t]); this.waiter = null; return a;
   }
-  async stock(packet) {
+  async stockRaw(packet, {timeout = TIMING.stepTimeout, settle = 0} = {}) {
     const sub = packet[3], seq = packet[4] | packet[5] << 8;
     await this.send(packet);
-    const end = Date.now() + TIMING.stepTimeout; let last = null;
+    if (settle > 0) await sleep(settle);
+    const end = Date.now() + timeout; let last = null;
     while (Date.now() < end) {
       const a = await this.ack();
       if (a) {
         last = a;
-        if (a.sub === sub && a.status !== 255 && (sub !== DATA || a.value === seq)) {
-          if (a.status === 0 || (sub === BEGIN && a.status === 6)) return a;
-          const e = Error(`第 ${sub} 步被拒絕，狀態 ${a.status}：${STATUS[a.status] || '未知狀態'}`); e.refused = true; throw e;
-        }
+        if (a.sub === sub && a.status !== 255 && (sub !== DATA || a.value === seq)) return a;
       }
       await sleep(TIMING.poll);
     }
-    const what = sub === DATA ? `第 ${seq} 包資料` : ({1: '開始指令', 3: '結束指令', 4: '中止指令'})[sub] || sub;
-    throw Error(`${what}等了 ${TIMING.stepTimeout / 1000} 秒沒有回應（最後回覆 ${JSON.stringify(last)}）`);
+    const names = {1: '開始指令', 3: '結束指令', 4: '中止指令', 5: '刪除指令', 6: '格式化指令', 10: '讀取列表指令', 11: '讀取列表內容', 12: '刪除槽位指令'};
+    const what = sub === DATA ? `第 ${seq} 包資料` : (names[sub] || sub);
+    throw Error(`${what}等了 ${timeout / 1000} 秒沒有回應（最後回覆 ${JSON.stringify(last)}）`);
+  }
+  async stock(packet, opts) {
+    const sub = packet[3], a = await this.stockRaw(packet, opts);
+    if (a.status === 0 || (sub === BEGIN && a.status === 6)) return a;
+    const e = Error(`第 ${sub} 步被拒絕，狀態 ${a.status}：${STATUS[a.status] || '未知狀態'}`); e.refused = true; e.status = a.status; throw e;
+  }
+  async listFiles(progress = () => {}) {
+    const a = await this.stockRaw(listPacket());
+    if (a.status === 7) return {files: [], rawLen: 0, count: 0, truncated: false};
+    if (a.status !== 0) {
+      const e = Error(`第 ${LIST} 步被拒絕，狀態 ${a.status}：${STATUS[a.status] || '未知狀態'}`); e.refused = true; e.status = a.status; throw e;
+    }
+    const rawLen = a.value & 0xFF, count = (a.value >> 8) & 0xFF;
+    const buf = new Uint8Array(rawLen);
+    for (let off = 0; off < rawLen; off += 2) {
+      const r = await this.stock(listReadPacket(off), {settle: TIMING.listReadDelay});
+      buf[off] = r.value & 0xFF;
+      if (off + 1 < rawLen) buf[off + 1] = (r.value >> 8) & 0xFF;
+      progress(Math.min(off + 2, rawLen) / Math.max(1, rawLen));
+    }
+    return {files: parseFileList(buf), rawLen, count, truncated: rawLen >= LIST_TRUNC_THRESHOLD};
+  }
+  async freeSpace() {
+    for (const kb of FREE_PROBE_KBS) {
+      const a = await this.stockRaw(freeProbePacket(kb));
+      if (a.status === 5) continue;
+      if (a.status === 4) return {freeKb: a.value, totalKb: kb};
+      if (a.status === 0 || a.status === 6) {
+        const freeKb = a.value;
+        try { await this.stockRaw(frame(ABORT), {timeout: 2000}); } catch (e) {}
+        return {freeKb, totalKb: kb};
+      }
+      const e = Error(`查詢剩餘空間失敗，狀態 ${a.status}：${STATUS[a.status] || '未知狀態'}`); e.refused = true; e.status = a.status; throw e;
+    }
+    return {freeKb: null, totalKb: null};
+  }
+  async deleteFile(name) {
+    const a = await this.stockRaw(deletePacket(name));
+    if (a.status === 0) return true;
+    if (a.status === 7) return false;
+    const e = Error(`刪除 ${name} 失敗，狀態 ${a.status}：${STATUS[a.status] || '未知狀態'}`); e.refused = true; e.status = a.status; throw e;
+  }
+  async deleteSlot(slot) {
+    const a = await this.stockRaw(deleteSlotPacket(slot));
+    if (a.status === 0) return a.value;
+    if (a.status === 7) return 0;
+    const e = Error(`刪除槽位 S${slot} 失敗，狀態 ${a.status}：${STATUS[a.status] || '未知狀態'}`); e.refused = true; e.status = a.status; throw e;
+  }
+  async deleteSmart(name) {
+    const up = name.toUpperCase(), m = SLOT_RE.exec(up);
+    if (m) return (await this.deleteSlot(Number(m[1]))) > 0;
+    return await this.deleteFile(up);
+  }
+  async formatFlash() {
+    const a = await this.stock(formatPacket(), {timeout: TIMING.formatTimeout});
+    return a.value;
   }
   async upload(name, data, progress = () => {}) {
     const crc = crc16(data), begin = new Uint8Array(17);
@@ -185,7 +458,7 @@ class Link {
       await this.stock(frame(END, 0, 0, 0, [crc & 255, crc >> 8]));
       ok = true;
     } finally {
-      if (!ok) { try { const t = TIMING.stepTimeout; TIMING.stepTimeout = 2000; try { await this.stock(frame(ABORT)); } finally { TIMING.stepTimeout = t; } } catch (e) {} }
+      if (!ok) { try { await this.stock(frame(ABORT), {timeout: 2000}); } catch (e) {} }
     }
   }
 }
@@ -212,68 +485,399 @@ async function installAll(link, files, log = () => {}, progress = () => {}) {
 // ==END==
 
 const $ = id => document.getElementById(id);
-const picked = new Map();        // name -> {name, data, game, problem, state}
+const MEM_KEY = 'rainy75_gamehub_installed_v1';
+function loadMem() { try { return JSON.parse(localStorage.getItem(MEM_KEY) || '{}') || {}; } catch (e) { return {}; } }
+function saveMem(m) { try { localStorage.setItem(MEM_KEY, JSON.stringify(m)); } catch (e) {} }
+let mem = loadMem();
+
+let activeDev = null, activeLink = null, busy = false;
+let flashState = null;          // null until read; else {files: [{name,size}], map: Map, freeKb, totalKb, truncated}
+
+const picked = new Map();        // name -> {name, data, sig, game, problem, checked, state}
 function fmt(n) { return n >= 1024 ? (n / 1024).toFixed(1) + ' KB' : n + ' B'; }
-function render() {
-  const tb = $('files').querySelector('tbody'); tb.innerHTML = '';
-  for (const g of GAMES) if (!picked.has(g.asset.file)) picked.set(g.asset.file, {name: g.asset.file, data: null, game: g, problem: null, state: ''});
-  for (const f of picked.values()) {
-    const tr = document.createElement('tr');
-    const check = !f.data ? '<span class="tag dim">未選擇</span>' : f.problem ? `<span class="tag err">✗ ${f.problem}</span>` : '<span class="tag ok">✓</span>';
-    tr.innerHTML = `<td><code>${f.name}</code></td><td>${f.game ? f.game.name : '—'}</td><td class="r">${f.data ? fmt(f.data.length) : ''}</td><td>${check}</td><td>${f.state}</td>`;
-    tb.appendChild(tr);
-  }
-  $('go').disabled = ![...picked.values()].some(f => f.data && !f.problem);
-}
-async function add(fileList) {
-  for (const file of fileList) {
-    const name = file.name.toUpperCase(), data = new Uint8Array(await file.arrayBuffer()), game = gameFor(name);
-    const problem = !game ? '不是 Game Hub 的素材檔名' : blobProblem(data, game);
-    picked.set(name, {name, data, game, problem, state: ''});
-  }
-  render();
-}
+function fmtKb(kb) { return kb >= 1024 ? `${(kb / 1024).toFixed(2)} MB (${kb.toLocaleString()} KB)` : `${kb.toLocaleString()} KB`; }
+
 function log(msg, cls) {
   const d = document.createElement('div'); if (cls) d.className = 'l' + cls;
   d.textContent = new Date().toLocaleTimeString() + '  ' + msg; $('log').appendChild(d); $('log').scrollTop = 1e9;
 }
+
+async function ensureLink() {
+  if (activeDev && activeDev.opened && activeLink) return activeLink;
+  if (!navigator.hid) throw Error('這個瀏覽器不支援 WebHID：請用桌面版 Chrome 或 Edge 開啟。');
+  const list = await navigator.hid.requestDevice({filters: [{vendorId: VID, productId: PID, usagePage: 0xFF60, usage: 0x61}]});
+  const dev = list.find(d => d.collections.some(c => c.usagePage === 0xFF60 && c.usage === 0x61));
+  if (!dev) throw Error('沒有選到鍵盤（請選 USB 線連接的 Rainy75）');
+  if (!dev.opened) await dev.open();
+  if (activeLink) activeLink.detach();
+  activeDev = dev;
+  activeLink = new Link(dev);
+  log(`已連接：${dev.productName || 'Rainy75'}`, 'ok');
+  render();
+  return activeLink;
+}
+async function disconnect() {
+  if (activeLink) { activeLink.detach(); activeLink = null; }
+  if (activeDev) { try { await activeDev.close(); } catch (e) {} activeDev = null; }
+  log('已斷開鍵盤連接。');
+  render();
+}
+if (navigator.hid) {
+  navigator.hid.addEventListener('disconnect', e => {
+    if (activeDev && e.device === activeDev) {
+      if (activeLink) { activeLink.detach(); activeLink = null; }
+      activeDev = null;
+      log('鍵盤已拔除或斷開連接。', 'warn');
+      render();
+    }
+  });
+}
+
+async function readFlashNow(link) {
+  $('status').textContent = '正在讀取鍵盤外置 Flash 狀態…';
+  $('bar').style.width = '10%';
+  const sp = await link.freeSpace();
+  $('bar').style.width = '25%';
+  const ls = await link.listFiles(frac => {
+    $('bar').style.width = (25 + frac * 75).toFixed(1) + '%';
+    $('status').textContent = `正在讀取 Flash 檔案清單 ${Math.round(frac * 100)}%`;
+  });
+  const map = new Map(ls.files.map(f => [f.name, f.size]));
+  flashState = {files: ls.files, map, freeKb: sp.freeKb, totalKb: sp.totalKb, truncated: ls.truncated};
+  $('bar').style.width = '100%';
+  $('status').textContent = `已讀取外置 Flash：共 ${ls.files.length} 個檔案` + (sp.freeKb != null ? `，剩餘 ${sp.freeKb} KB` : '');
+  const spaceStr = sp.freeKb != null ? `，剩餘 ${sp.freeKb} / ${sp.totalKb} KB` : '';
+  log(`Flash 讀取完成：${ls.files.length} 個檔案${spaceStr}` + (ls.truncated ? '（列表接近 256B 上限，可能尚有未顯示檔案）' : ''), 'ok');
+  render();
+}
+
+function renderFlash() {
+  const connected = !!(activeDev && activeDev.opened);
+  const pill = $('connPill');
+  pill.textContent = connected ? `已連接：${activeDev.productName || 'Rainy75'}` : '尚未連接';
+  pill.className = 'conn-pill' + (connected ? ' on' : '');
+  $('btnRead').textContent = flashState ? '重新整理 Flash' : '讀取鍵盤 Flash';
+  $('btnRead').disabled = busy;
+  $('btnFormat').disabled = busy;
+  $('btnDisc').disabled = busy || !connected;
+
+  if (!flashState) {
+    $('capWrap').style.display = 'none';
+    $('truncNotice').className = 'notice';
+    $('flashTable').style.display = 'none';
+    $('flashEmpty').style.display = 'block';
+    $('btnDelHub').disabled = true;
+    return;
+  }
+
+  const ghFiles = flashState.files.filter(f => classifyFlashFile(f.name).kind === 'gamehub');
+  $('btnDelHub').disabled = busy || ghFiles.length === 0;
+  $('truncNotice').className = 'notice' + (flashState.truncated ? ' show' : '');
+
+  if (flashState.freeKb != null && flashState.totalKb) {
+    const usedKb = Math.max(0, flashState.totalKb - flashState.freeKb);
+    const pct = Math.min(100, Math.max(0, (usedKb * 100) / flashState.totalKb));
+    $('capWrap').style.display = 'block';
+    $('capText').textContent = `剩餘空間：${fmtKb(flashState.freeKb)} / ${fmtKb(flashState.totalKb)}`;
+    const sumBytes = flashState.files.reduce((s, f) => s + f.size, 0);
+    $('capSub').textContent = `已用約 ${usedKb.toLocaleString()} KB（${pct.toFixed(0)}%）· 列表 ${flashState.files.length} 檔共 ${fmt(sumBytes)}`;
+    const cb = $('capBar');
+    cb.style.width = pct.toFixed(1) + '%';
+    cb.className = pct >= 90 ? 'high' : pct >= 75 ? 'warn' : '';
+  } else {
+    $('capWrap').style.display = 'none';
+  }
+
+  const tb = $('flashTable').querySelector('tbody'); tb.innerHTML = '';
+  if (!flashState.files.length) {
+    $('flashTable').style.display = 'none';
+    $('flashEmpty').style.display = 'block';
+    $('flashEmpty').textContent = '外置 Flash 目前沒有任何檔案（空間已騰空）。';
+    return;
+  }
+  $('flashEmpty').style.display = 'none';
+  $('flashTable').style.display = 'table';
+
+  for (const item of flashState.files) {
+    const info = classifyFlashFile(item.name);
+    const tr = document.createElement('tr');
+    const badgeCls = info.kind === 'gamehub' ? 'gh' : info.kind === 'slot' ? 'slot' : 'other';
+    tr.innerHTML = `<td><code>${item.name}</code></td>`
+      + `<td><span class="badge ${badgeCls}">${info.label}</span></td>`
+      + `<td class="r">${fmt(item.size)} <span style="color:#94a3b8;font-size:11px">(${item.size.toLocaleString()} B)</span></td>`;
+    const tdAct = document.createElement('td'); tdAct.className = 'act';
+    const btn = document.createElement('button');
+    btn.className = 'mini danger del';
+    btn.textContent = '刪除';
+    btn.disabled = busy;
+    btn.onclick = () => deleteOneFlashFile(item.name, info);
+    tdAct.appendChild(btn);
+    tr.appendChild(tdAct);
+    tb.appendChild(tr);
+  }
+}
+
+function renderAssets() {
+  const tb = $('files').querySelector('tbody'); tb.innerHTML = '';
+  for (const g of GAMES) {
+    if (!picked.has(g.asset.file)) picked.set(g.asset.file, {name: g.asset.file, data: null, sig: '', game: g, problem: null, checked: false, state: ''});
+  }
+  const flashMap = flashState ? flashState.map : null;
+  let validCount = 0, selCount = 0, selBytes = 0, netDeltaBytes = 0, maxSingleBytes = 0;
+  for (const f of picked.values()) {
+    const valid = !!(f.data && !f.problem);
+    if (valid) validCount++;
+    if (valid && f.checked) {
+      selCount++; selBytes += f.data.length;
+      if (f.data.length > maxSingleBytes) maxSingleBytes = f.data.length;
+      const oldSize = flashMap && flashMap.has(f.name) ? flashMap.get(f.name) : 0;
+      netDeltaBytes += Math.max(0, f.data.length - oldSize);
+    }
+    const sameAsMem = valid && mem[f.name] && mem[f.name] === f.sig;
+    let kbCell = '<span class="tag dim">尚未讀取</span>';
+    if (flashMap) {
+      if (!flashMap.has(f.name)) kbCell = '<span class="tag miss">Flash 未安裝</span>';
+      else {
+        const onSize = flashMap.get(f.name);
+        if (!f.data) kbCell = `<span class="tag ok">已存在 (${fmt(onSize)})</span>`;
+        else if (onSize === f.data.length) kbCell = '<span class="tag ok">已存在 (大小相符)</span>';
+        else kbCell = `<span class="tag warn">大小不同 (${fmt(onSize)})</span>`;
+      }
+    } else if (sameAsMem) {
+      kbCell = '<span class="tag skip">本機紀錄已裝</span>';
+    }
+    const check = !f.data ? '<span class="tag dim">未選擇</span>'
+      : f.problem ? `<span class="tag err">✗ ${f.problem}</span>`
+      : sameAsMem ? '<span class="tag skip">✓ 同上次</span>'
+      : '<span class="tag ok">✓</span>';
+    const tr = document.createElement('tr');
+    const tdChk = document.createElement('td'); tdChk.className = 'c';
+    const cb = document.createElement('input'); cb.type = 'checkbox';
+    cb.disabled = busy || !valid; cb.checked = valid && f.checked;
+    cb.onchange = () => { f.checked = cb.checked; render(); };
+    tdChk.appendChild(cb);
+    tr.appendChild(tdChk);
+    const rest = document.createElement('template');
+    rest.innerHTML = `<td><code>${f.name}</code></td><td>${f.game ? f.game.name : '—'}</td><td class="r">${f.data ? fmt(f.data.length) : ''}</td><td>${kbCell}</td><td>${check}</td><td>${f.state}</td>`;
+    tr.appendChild(rest.content);
+    tb.appendChild(tr);
+  }
+  $('selAll').disabled = busy || validCount === 0;
+  $('selNew').disabled = busy || validCount === 0;
+  $('selNone').disabled = busy || selCount === 0;
+  $('clearMem').disabled = busy;
+  $('go').disabled = busy || selCount === 0;
+
+  const sumEl = $('summary');
+  sumEl.className = 'summary';
+  if (!selCount) {
+    sumEl.textContent = validCount ? '請勾選要安裝的檔案' : '';
+  } else {
+    let txt = `已勾選 ${selCount} 檔（共 ${fmt(selBytes)}）`;
+    if (flashState && flashState.freeKb != null) {
+      const freeBytes = flashState.freeKb * 1024;
+      if (maxSingleBytes > freeBytes || netDeltaBytes > freeBytes) {
+        txt += ` · ⚠️ 剩餘空間 (${flashState.freeKb} KB) 可能不足，建議先清理`;
+        sumEl.className = 'summary warn';
+      }
+    }
+    sumEl.textContent = txt;
+  }
+}
+
+function render() { renderFlash(); renderAssets(); }
+
+function addBin(name, data) {
+  const up = name.toUpperCase(), game = gameFor(up);
+  const problem = !game ? '不是 Game Hub 的素材檔名' : blobProblem(data, game);
+  const sig = !problem ? fileSig(data) : '';
+  const sameAsMem = !problem && mem[up] && mem[up] === sig;
+  const row = {name: up, data, sig, game, problem, checked: false, state: sameAsMem ? '<span class="tag skip">上次已裝</span>' : ''};
+  row.checked = !problem && (flashState ? needsUpload(row, flashState.map, mem) : true);
+  picked.set(up, row);
+}
+async function add(fileList) {
+  for (const file of fileList) {
+    const raw = new Uint8Array(await file.arrayBuffer());
+    if (/\.zip$/i.test(file.name)) {
+      try {
+        const bins = await unpackZip(raw);
+        if (!bins.length) { log(`${file.name}：壓縮包裡沒有找到 .BIN 素材檔`, 'err'); continue; }
+        let okN = 0;
+        for (const item of bins) {
+          addBin(item.name, item.data);
+          if (!picked.get(item.name).problem) okN++;
+        }
+        log(`已解包 ${file.name}：載入 ${bins.length} 個素材檔（通過校驗 ${okN} 個）`, 'ok');
+      } catch (e) {
+        log(`${file.name}：解包失敗 — ${e.message}`, 'err');
+      }
+    } else {
+      addBin(file.name, raw);
+    }
+  }
+  render();
+}
+
+async function runExclusive(fn) {
+  if (busy) return;
+  busy = true;
+  $('banner').className = 'banner';
+  render();
+  try { await fn(); }
+  catch (e) {
+    log(e.message || String(e), 'err');
+    $('status').textContent = '操作未完成';
+    $('banner').className = 'banner err';
+    $('banner').textContent = e.message || String(e);
+  } finally {
+    busy = false;
+    render();
+  }
+}
+
+async function deleteOneFlashFile(name, info) {
+  const extra = info.kind === 'slot'
+    ? '\n\n⚠️ 注意：這是自訂底圖槽位！Game Hub 需要至少一個 320×172 自訂 GIF 才能顯示選單，刪除後若要再用 Game Hub 需重新上傳底圖。'
+    : '';
+  if (!window.confirm(`確定要從鍵盤外置 Flash 刪除 ${name}（${info.label}）嗎？${extra}`)) return;
+  await runExclusive(async () => {
+    const link = await ensureLink();
+    $('status').textContent = `正在刪除 ${name}…`;
+    log(`刪除 ${name}…`);
+    const removed = await link.deleteSmart(name);
+    if (removed) {
+      delete mem[name]; saveMem(mem);
+      log(`${name}：已刪除`, 'ok');
+    } else {
+      log(`${name}：Flash 上已不存在`, 'warn');
+    }
+    await readFlashNow(link);
+    $('banner').className = 'banner ok';
+    $('banner').textContent = `已刪除 ${name} 並刷新外置 Flash 空間。`;
+  });
+}
+
+$('btnRead').onclick = () => runExclusive(async () => {
+  const link = await ensureLink();
+  await readFlashNow(link);
+});
+
+$('btnDisc').onclick = () => runExclusive(async () => { await disconnect(); });
+
+$('btnDelHub').onclick = async () => {
+  if (!flashState) return;
+  const targets = flashState.files.filter(f => classifyFlashFile(f.name).kind === 'gamehub');
+  if (!targets.length) return;
+  const totalBytes = targets.reduce((s, f) => s + f.size, 0);
+  const ok = window.confirm(
+    `將刪除鍵盤外置 Flash 上全部 ${targets.length} 個 Game Hub 素材檔（共 ${fmt(totalBytes)}）：\n`
+    + targets.map(f => f.name).join('、')
+    + '\n\n自訂底圖（S1–S4.GIF）與其他檔案會保留。確定清除嗎？'
+  );
+  if (!ok) return;
+  await runExclusive(async () => {
+    const link = await ensureLink();
+    let delN = 0;
+    for (let i = 0; i < targets.length; i++) {
+      const fn = targets[i].name;
+      $('status').textContent = `正在清除 Game Hub 素材 (${i + 1}/${targets.length})：${fn}`;
+      $('bar').style.width = (((i + 1) / targets.length) * 100).toFixed(1) + '%';
+      const removed = await link.deleteFile(fn);
+      if (removed) { delN++; delete mem[fn]; log(`已刪除 ${fn}`, 'ok'); }
+      else log(`${fn} 已不存在`, 'warn');
+    }
+    saveMem(mem);
+    await readFlashNow(link);
+    $('banner').className = 'banner ok';
+    $('banner').textContent = `已清除 ${delN} 個 Game Hub 素材檔（自訂底圖已保留）`
+      + (flashState && flashState.freeKb != null ? `，目前剩餘 ${flashState.freeKb} KB。` : '。');
+  });
+};
+
+$('btnFormat').onclick = async () => {
+  const ok1 = window.confirm(
+    '⚠️ 警告：「格式化清空整個外置 Flash」會刪除鍵盤螢幕 Flash 裡的【全部檔案】！\n\n'
+    + '• 包含：所有 Game Hub 遊戲素材 (.BIN)、自訂底圖 (S1–S4.GIF)、字庫 (FONT.BIN) 等全部檔案。\n'
+    + '• 適用情境：準備更換其他玩法／刷入別的固件，需要徹底騰空全部 4 MB 外置空間。\n'
+    + '• 若之後還要玩 Game Hub，需重新上傳 320×172 底圖 GIF 並重裝素材。\n\n確定要繼續嗎？'
+  );
+  if (!ok1) return;
+  const ok2 = window.confirm('最後確認：格式化過程約需數秒，請勿拔除 USB 線。確定立即格式化外置 Flash？');
+  if (!ok2) return;
+  await runExclusive(async () => {
+    const link = await ensureLink();
+    $('status').textContent = '正在格式化外置 Flash（請勿拔線）…';
+    $('bar').style.width = '40%';
+    log('開始格式化外置 Flash（sub=6）…', 'warn');
+    const freeKb = await link.formatFlash();
+    mem = {}; saveMem(mem);
+    log(`外置 Flash 格式化完成！格式化後剩餘 ${freeKb} KB`, 'ok');
+    await readFlashNow(link);
+    $('banner').className = 'banner ok';
+    $('banner').textContent = `外置 Flash 已完全清空！目前可用空間約 ${freeKb} KB，現在可直接更換其他玩法或重新安裝素材。`;
+  });
+};
+
+$('selAll').onclick = () => { for (const f of picked.values()) if (f.data && !f.problem) f.checked = true; render(); };
+$('selNone').onclick = () => { for (const f of picked.values()) f.checked = false; render(); };
+$('selNew').onclick = () => {
+  const flashMap = flashState ? flashState.map : null;
+  let n = 0;
+  for (const f of picked.values()) {
+    if (f.data && !f.problem) {
+      f.checked = needsUpload(f, flashMap, mem);
+      if (f.checked) n++;
+    }
+  }
+  if (!n) {
+    log(flashMap
+      ? '鍵盤外置 Flash 上所有已載入的素材皆已存在且大小相符（若想強制覆寫請按「全選已載入」）。'
+      : '目前載入的素材都與上次本機已裝版本相同（建議先按上方「讀取鍵盤 Flash」以實機狀態為準，或按「全選已載入」）。', 'warn');
+  }
+  render();
+};
+$('clearMem').onclick = () => {
+  mem = {}; saveMem(mem);
+  for (const f of picked.values()) if (f.data && !f.problem) { f.checked = true; f.state = ''; }
+  log('已清除本機已安裝紀錄。');
+  render();
+};
 $('drop').onclick = () => $('pick').click();
-$('pick').onchange = e => add(e.target.files);
+$('pick').onchange = e => { add(e.target.files); e.target.value = ''; };
 $('drop').ondragover = e => { e.preventDefault(); $('drop').classList.add('over'); };
 $('drop').ondragleave = () => $('drop').classList.remove('over');
 $('drop').ondrop = e => { e.preventDefault(); $('drop').classList.remove('over'); add(e.dataTransfer.files); };
-$('go').onclick = async () => {
-  const files = [...picked.values()].filter(f => f.data && !f.problem);
-  $('banner').className = 'banner'; $('go').disabled = true;
-  if (!navigator.hid) { log('這個瀏覽器不支援 WebHID：請用桌面版 Chrome 或 Edge 開啟。', 'err'); render(); return; }
-  let dev;
-  try {
-    const list = await navigator.hid.requestDevice({filters: [{vendorId: VID, productId: PID, usagePage: 0xFF60, usage: 0x61}]});
-    dev = list.find(d => d.collections.some(c => c.usagePage === 0xFF60 && c.usage === 0x61));
-    if (!dev) throw Error('沒有選到鍵盤（請選 USB 線連接的 Rainy75）');
-    if (!dev.opened) await dev.open();
-  } catch (e) { log(e.message, 'err'); render(); return; }
-  log(`已連接：${dev.productName || 'Rainy75'}`, 'ok');
-  const link = new Link(dev), total = files.reduce((s, f) => s + f.data.length, 0);
+
+$('go').onclick = () => runExclusive(async () => {
+  const files = [...picked.values()].filter(f => f.data && !f.problem && f.checked);
+  if (!files.length) return;
+  const link = await ensureLink();
+  const total = files.reduce((s, f) => s + f.data.length, 0);
   let done = 0;
   const res = await installAll(link, files, (m, c) => {
     log(m, c);
     const f = files.find(x => m.startsWith(x.name));
-    if (f) { f.state = c === 'ok' ? '<span class="tag ok">已安裝</span>' : c === 'err' ? '<span class="tag err">失敗</span>' : '傳送中…'; render(); }
+    if (f) {
+      if (c === 'ok') { mem[f.name] = f.sig; saveMem(mem); f.state = '<span class="tag ok">已安裝</span>'; }
+      else if (c === 'err') f.state = '<span class="tag err">失敗</span>';
+      else f.state = '傳送中…';
+      renderAssets();
+    }
   }, (k, frac) => {
     const before = files.slice(0, k).reduce((s, f) => s + f.data.length, 0);
     done = before + frac * files[k].data.length;
     $('bar').style.width = (100 * done / total).toFixed(1) + '%';
     $('status').textContent = `${files[k].name}  ${Math.round(frac * 100)}%`;
   });
-  try { await dev.close(); } catch (e) {}
   const failed = Object.keys(res).filter(n => !res[n]);
+  try { await readFlashNow(link); } catch (e) { log('安裝後刷新 Flash 狀態失敗：' + e.message, 'warn'); }
   $('status').textContent = failed.length ? '有檔案沒裝好' : '全部完成';
   $('banner').className = 'banner ' + (failed.length ? 'err' : 'ok');
-  $('banner').textContent = failed.length ? `失敗：${failed.join('、')}。可以再按一次「連接鍵盤並安裝」重試。`
+  $('banner').textContent = failed.length ? `失敗：${failed.join('、')}。可以再按一次「安裝已勾選素材」重試。`
                                           : '全部安裝完成！在 Game Hub 選單按一下 ↑ 或 ↓，NO FILE 就會消失。';
-  render();
-};
+});
+
 render();
 </script>
 </body>

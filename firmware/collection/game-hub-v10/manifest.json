@@ -1,9 +1,9 @@
 {
-  "name": "game-hub-v9",
+  "name": "hub-v10-public",
   "original_sha256": "32defab7902e57eb972a577fc6cbf3a7e57bc772d59b99f11038370412b77f41",
-  "candidate_sha256": "a3af4db89403b0f73ff93952182ed9a5d050a78f38f16197c28fe92a07b92ec3",
+  "candidate_sha256": "55dcc4c3fca9d5ae771593b7536a6ff911f1936ef9bece7c840bdb806eb0fb24",
   "original_bytes": 502925,
-  "candidate_bytes": 695040,
+  "candidate_bytes": 706240,
   "flash_base": "0x8004000",
   "hot_code": [
     "0x807ed00",
@@ -11,9 +11,9 @@
   ],
   "code": [
     "0x8080000",
-    "0x80adafe"
+    "0x80b06c0"
   ],
-  "image_end": "0x80adb00",
+  "image_end": "0x80b06c0",
   "needs": "extended flasher (image larger than 507,904 bytes); a 320x172 custom GIF playing on the screen",
   "state_start": "0x20050b00",
   "state_reserved_bytes": 256,
@@ -42,16 +42,16 @@
     {
       "address": "0x805ac1a",
       "before": "02f06afd",
-      "after": "25f022fe",
+      "after": "25f024fe",
       "purpose": "draw_hook",
-      "target": "0x8080863"
+      "target": "0x8080867"
     },
     {
       "address": "0x805b282",
       "before": "02f036fa",
-      "after": "25f0eefa",
+      "after": "25f0f0fa",
       "purpose": "draw_hook",
-      "target": "0x8080863"
+      "target": "0x8080867"
     },
     {
       "address": "0x805b462",
@@ -63,35 +63,36 @@
     {
       "address": "0x807a760",
       "before": "e0f770fd",
-      "after": "06f098fb",
+      "after": "06f09afb",
       "purpose": "tick_hook",
-      "target": "0x8080e95"
+      "target": "0x8080e99"
     }
   ],
   "symbols": {
-    "aqua_init": "0x80a08bd",
-    "avatar_init": "0x8083009",
+    "aqua_init": "0x80a08c1",
+    "avatar_init": "0x808300d",
     "boot_hook": "0x80805a9",
-    "boss_init": "0x8086431",
-    "codemaster_init": "0x8090c05",
-    "combo_init": "0x808a5b9",
+    "boss_init": "0x8086435",
+    "codemaster_init": "0x8090c09",
+    "combo_init": "0x808a5bd",
     "dispatch_hook": "0x8080469",
-    "draw_hook": "0x8080863",
-    "fight_init": "0x8084c83",
-    "guard_init": "0x8093ed7",
-    "heatmap_init": "0x808def3",
+    "draw_hook": "0x8080867",
+    "fight_init": "0x8084c87",
+    "guard_init": "0x8093edb",
+    "heatmap_init": "0x808def7",
     "hub_read": "0x8080001",
     "key_hook": "0x80806e5",
-    "maid_init": "0x808ef19",
-    "maidbig_init": "0x808fd91",
-    "officecat_init": "0x80a4b7b",
-    "pet_init": "0x8088d2d",
-    "rain_init": "0x808c521",
-    "sharingan_init": "0x80a821f",
-    "snake_init": "0x8081507",
-    "tick_hook": "0x8080e95",
-    "tug_init": "0x8098043",
-    "wobqc_init": "0x809bc47"
+    "kurocat_init": "0x80a8d73",
+    "maid_init": "0x808ef1d",
+    "maidbig_init": "0x808fd95",
+    "officecat_init": "0x80a4b7f",
+    "pet_init": "0x8088d31",
+    "rain_init": "0x808c525",
+    "sharingan_init": "0x80a8223",
+    "snake_init": "0x808150b",
+    "tick_hook": "0x8080e99",
+    "tug_init": "0x8098047",
+    "wobqc_init": "0x809bc4b"
   },
   "controls": {
     "menu": "Up / Down choose (scrolling list, 5 rows), Enter starts",
@@ -182,19 +183,18 @@
       "id": "sharingan",
       "name": "SHARINGAN",
       "asset": "SHARINGN.BIN"
+    },
+    {
+      "id": "kurocat",
+      "name": "KUROCAT",
+      "asset": "KUROCAT.BIN"
     }
   ],
   "asset_files": {
-    "AVATAR.BIN": "YUXI SNAKER",
-    "FIGHT.BIN": "MUSCLE VS GOBLIN",
-    "BOSS.BIN": "TYPING BOSS",
-    "PET.BIN": "TYPING PET",
-    "GUARD.BIN": "KEY GUARD",
-    "TUG.BIN": "TUG OF WAR",
-    "WOBQC.BIN": "WOB QC",
-    "AQUA.BIN": "KEYQUARIUM",
-    "OFFCAT.BIN": "OFFICE CAT",
-    "SHARINGN.BIN": "SHARINGAN"
+    "AVATAR.BIN": "avatar-snake-v2 blob (AVS1, 77 sprites)",
+    "FIGHT.BIN": "fight-v2 blob (FGA1, 40)",
+    "BOSS.BIN": "typing-boss-v2 blob (TBA1, 34)",
+    "PET.BIN": "typing-pet-v2 blob (TPA1, 47)"
   },
   "vendor_calls": {
     "f_open": "0x0803C805",
@@ -290,7 +290,11 @@
       "code": 3412,
       "hot": 0,
       "data": 0
+    },
+    "kurocat": {
+      "code": 11153,
+      "hot": 0,
+      "data": 0
     }
-  },
-  "install_assets": "flasher/GameHub素材安裝工具.html (Chrome / Edge, WebHID)"
+  }
 }
